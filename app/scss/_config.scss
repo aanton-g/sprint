@@ -1,22 +1,22 @@
 // USER VARIABLES SECTION
 
-$accent: orange; // Accent Color
+
+$bg: #F4F3F4;
+$bg-blue: #5CA7F2;
+$bg-grey: #767677;
+$bg-grey-dark: #505254;
+$bg-dark: #3C3B3B;
+$border: #E1E1E1;
+
 $fontsize: 16px; // Body Font Size
-$textcolor: #333; // Text Color
-$lineheight: 1.65; // Document Line Height
+$textcolor: #000; // Text Color
+$lineheight: 1.25; // Document Line Height
 $userfont: Roboto, sans-serif; // User Font Family
 $systemfont: -apple-system, BlinkMacSystemFont, Arial, sans-serif; // System Font Family
 
 // Bootstrap compatible gutter variable => $gutter
 $grid-gutter-width: 30px;
 $gutter: $grid-gutter-width;
-
-// IMPORT SECTION
-
-@import 'node_modules/bootstrap/scss/bootstrap-reboot.scss'; // Bootstrap Reboot collection
-@import 'node_modules/bootstrap/scss/mixins/_breakpoints.scss'; // Bootstrap Breakpoints mixin
-// @import 'node_modules/bootstrap/scss/bootstrap-grid.scss'; // Optional Bootstrap Grid
-// @import 'node_modules/bootstrap/scss/utilities/_sizing.scss'; // Optional Bootstrap Utilites
 
 // FONTS LOAD SECTION
 
@@ -41,11 +41,6 @@ $gutter: $grid-gutter-width;
 	color: #666;
 }
 
-::selection {
-	background-color: $accent;
-	color: #fff;
-}
-
 input, textarea {
 	outline: none;
 	&:focus:required:invalid { border-color: red }
@@ -60,4 +55,12 @@ body {
 	min-width: 320px;
 	position: relative;
 	overflow-x: hidden;
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0;
+}
+
+.main {
+	max-width: calc(100% - 340px);
+	flex-grow: 1;
 }

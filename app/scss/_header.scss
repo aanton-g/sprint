@@ -1,0 +1,51 @@
+.header {
+  min-height: 100vh;
+  padding: 20px 5px;
+  background-color: $bg;
+  max-width: 310px;
+  width: 100%;
+  margin-left: 20px;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  h2 {
+    font-size: 18px;
+    font-weight: normal;
+    color: #9F9A9A;
+    margin: 16px 0;
+    text-align: center;
+  }
+
+  &-inner {
+    border-radius: 25px;
+    background-color: white;
+    padding: 25px 16px 21px 14px;
+  }
+
+  &-logo {
+    margin-bottom: 16px;
+  }
+
+  &-links {
+    display: flex;
+
+    li {
+      font-size: 10px;
+      margin-right: 19px;
+      text-align: center;
+
+      svg {
+        width: 30px;
+        height: 30px;
+      }
+
+      &:first-child {
+        margin-left: 19px;
+      }
+    }
+  }
+}

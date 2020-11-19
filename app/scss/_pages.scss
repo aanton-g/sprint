@@ -1,0 +1,60 @@
+.pages {
+  margin-left: 20px;
+
+  a {
+    color: $textcolor;
+    text-decoration: none;
+  }
+
+  &-items {
+    display: flex;
+    flex-flow: row wrap;
+    border: 1px solid $border;
+    border-style: solid none none solid;
+  }
+
+  &-item {
+    width: 100%;
+    max-width: 349px;
+    min-height: 445px;
+    border: 1px solid $border;
+    border-style: none solid solid none;
+    padding: 20px;
+    transition: background-color .3s;
+
+    &:hover {
+      background-color: $bg;
+    }
+
+    &-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 140px;
+      text-align: center;
+      margin-bottom: 38px;
+    }
+
+    &-links {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      display: flex;
+      flex-flow: row wrap;
+      max-width: 170px;
+      margin-left: 80px;
+
+      li {
+        margin: 0 4px 2px 0;
+      }
+    }
+
+    &-title {
+      display: block;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      margin-left: 80px;
+    }
+  }
+}

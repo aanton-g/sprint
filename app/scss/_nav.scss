@@ -1,0 +1,117 @@
+.nav {
+  &-item {
+    display: flex;
+    flex-direction: column;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 5px;
+    border-radius: 9px;
+    border: 1px solid $border;
+    transition: .3s;
+    cursor: pointer;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      margin-left: 5px;
+      fill: currentColor;
+      transform: rotate(-90deg);
+      transition: transform .15s;
+    }
+
+    &.is-active {
+      color: white;
+
+      .nav-item-inner {
+        background-color: $bg-blue;
+
+        svg {
+          transform: rotate(0);
+        }
+      }
+
+      .nav-dropdown {
+        display: block;
+      }
+    }
+
+    &:hover:not(.is-active) {
+      background-color: $bg;
+    }
+
+    &-inner {
+      display: inline-flex;
+      align-items: center;
+      padding: 14px 18px;
+      border-radius: 9px;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 6px;
+    }
+  }
+
+  &-dropdown {
+    display: none;
+    margin-top: 5px;
+
+    &-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &-item {
+      display: flex;
+      flex-direction: column;
+      font-size: 14px;
+      font-weight: normal;
+
+      &.is-active {
+        .nav-dropdown-inner {
+          display: block;
+        }
+
+        span {
+          border-color: #2592FF;
+        }
+
+        svg {
+          transform: rotate(0);
+        }
+      }
+
+      &:not(:last-child) {
+        margin-bottom: 6px;
+      }
+
+      span {
+        display: inline-flex;
+        align-items: center;
+        padding: 15px 18px 15px 24px;
+        background-color: $bg-grey-dark;
+        border: 2px solid $bg-grey-dark;
+        border-radius: 9px;
+      }
+    }
+
+    &-inner {
+      display: none;
+      margin-top: 5px;
+
+      li {
+        &:not(:last-child) {
+          margin-bottom: 5px;
+        }
+      }
+
+      a {
+        display: block;
+        color: white;
+        text-decoration: none;
+        background-color: $bg-grey;
+        padding: 15px 18px 15px 30px;
+        border-radius: 9px;
+      }
+    }
+  }
+}
