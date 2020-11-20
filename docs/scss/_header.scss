@@ -4,7 +4,6 @@
   background-color: $bg;
   max-width: 310px;
   width: 100%;
-  margin-left: 20px;
 
   ul {
     list-style: none;
@@ -28,6 +27,10 @@
 
   &-logo {
     margin-bottom: 16px;
+  }
+
+  &-link {
+    text-align: center;
   }
 
   &-links {
