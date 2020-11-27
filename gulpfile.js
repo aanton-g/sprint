@@ -55,7 +55,7 @@ function scripts() {
 		baseDir + '/js/app.js',
 	])
 	.pipe(concat(paths.jsOutputName))
-	.pipe(uglify())
+	/* .pipe(uglify()) */
 	.pipe(dest(baseDir + '/js'))
 }
 

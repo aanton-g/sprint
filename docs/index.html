@@ -280,8 +280,6 @@
 				  <div class="calc-variants">
 						<div class="calc-button">Офсетный</div>
 						<div class="calc-button is-active">Цифровой</div>
-						<div class="calc-button">Широкоформатный</div>
-						<div class="calc-button">Сувенирка</div>
 					</div>
 				</div>
 
@@ -293,25 +291,20 @@
 							<div class="calc-row-field">
 								<label for="">Тип</label>
 								<select name="" id="">
-									<option value="0">Не выбрано</option>
-									<option value="1">Первая опция</option>
+									<option value="0">Мелованая</option>
 								</select>
 							</div>
 
 							<div class="calc-row-field">
 								<label for="">Фактура</label>
 								<select name="" id="">
-									<option value="0">Не выбрано</option>
-									<option value="1">Первая опция</option>
+									<option value="0">Матовая</option>
 								</select>
 							</div>
 
 							<div class="calc-row-field">
-								<label for="">Плотность</label>
-								<select name="" id="">
-									<option value="0">Не выбрано</option>
-									<option value="1">Первая опция</option>
-								</select>
+								<label for="density">Плотность</label>
+								<select name="density" class="density" id="density"></select>
 							</div>
 						</div>
 					</div>
@@ -321,27 +314,23 @@
 
 						<div class="calc-row-fields">
 							<div class="calc-row-field">
-								<label for="">Формат</label>
-								<select name="" id="">
-									<option value="0">Другой</option>
-									<option value="1">А4</option>
-									<option value="2">А3</option>
-								</select>
+								<label for="format">Формат</label>
+								<select name="format" class="format" id="format"></select>
 							</div>
 
 							<div class="calc-row-field">
-								<label for="">Ширина</label>
-								<input type="text" name="" id="" placeholder="0">
+								<label for="width">Ширина</label>
+								<input type="text" name="width" id="width" placeholder="0">
 							</div>
 
 							<div class="calc-row-field">
-								<label for="">Высота</label>
-								<input type="text" name="" id="" placeholder="0">
+								<label for="height">Высота</label>
+								<input type="text" name="height" id="height" placeholder="0">
 							</div>
 
 							<div class="calc-row-field">
-								<label for="">Тираж</label>
-								<input type="text" name="" id="" placeholder="0">
+								<label for="quantity">Тираж</label>
+								<select name="quantity" class="quantity" id="quantity"></select>
 							</div>
 						</div>
 					</div>
@@ -351,19 +340,13 @@
 
 						<div class="calc-row-fields">
 							<div class="calc-row-field">
-								<label for="">Лицо</label>
-								<select name="" id="">
-									<option value="0">Не выбрано</option>
-									<option value="1">Первая опция</option>
-								</select>
+								<label for="front">Лицо</label>
+								<select name="front" class="color" id="front"></select>
 							</div>
 
 							<div class="calc-row-field">
-								<label for="">Оборот</label>
-								<select name="" id="">
-									<option value="0">Не выбрано</option>
-									<option value="1">Первая опция</option>
-								</select>
+								<label for="back">Оборот</label>
+								<select name="back" class="color" id="back"></select>
 							</div>
 						</div>
 					</div>
@@ -375,26 +358,23 @@
 							<div class="calc-row-field">
 								<label for="">Лицо</label>
 								<select name="" id="">
-									<option value="0">Не выбрано</option>
-									<option value="1">Первая опция</option>
+									<option value="0">Нет</option>
 								</select>
 							</div>
 
 							<div class="calc-row-field">
 								<label for="">Оборот</label>
 								<select name="" id="">
-									<option value="0">Не выбрано</option>
-									<option value="1">Первая опция</option>
+									<option value="0">Нет</option>
 								</select>
 							</div>
 						</div>
 					</div>
 
 					<div class="calc-footer">
-						<div class="calc-button calc-button-active">Рассчитать</div>
 						<div class="calc-footer-info">
 							<span>печать за 1-день</span>
-							<h3>Цена: <span>0</span> руб.</h3>
+							<h3>Цена: <span id="total">0</span> руб.</h3>
 						</div>
 						<div class="calc-button calc-button-cta">Оформить заказ</div>
 					</div>
