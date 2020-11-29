@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // calc
+  const typeSelect = document.querySelector('#type');
   const formatSelect = document.querySelector('#format');
   const densitySelect = document.querySelector('#density');
   const colorFrontSelect = document.querySelector('#front');
@@ -32,9 +33,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const selects = document.querySelectorAll('.calc-row select');
 
+  config.types.forEach(function(item) {
+    selectInit(item.title, item.name, typeSelect);
+  });
+
+  config.formats.forEach(function(item) {
+    selectInit(item.title, item.name, formatSelect);
+  });
+
   selects.forEach(function(select) {
     select.addEventListener('change', function() {
-      if(select.id === 'format') {
+      if(select.id === 'type') {
+        const currentType = config.types.find(type => type.name === this.value);
+        const formatsList = [];
+
+        currentType.formats.forEach(function(item) {
+          const currentItem = config.formats.find(format => format.name === item);
+          formatsList.push(currentItem);
+        });
+
+        removeOptions(formatSelect);
+        formatsList.forEach(function(item) {
+          selectInit(item.title, item.name, formatSelect);
+        });
+
+        updateOptions(formatsList[0]);
+      } else if(select.id === 'format') {
         const currentFormat = config.formats.find(format => format.name === this.value);
         updateOptions(currentFormat);
       }
@@ -43,15 +67,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  config.formats.forEach(function(item) {
-    selectInit(item.title, item.name, formatSelect);
-  });
-
   function updateOptions(format) {
     format.options.forEach(function(option) {
       const select = document.querySelector('#' + option.name);
 
-      removeOptions(select)
+      removeOptions(select);
 
       option.values.forEach(function(value) {
         const curName = typeof value === 'object' ? value.name : value;
@@ -102,9 +122,23 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 const config = {
-  type: [
-    'Мелованая',
-    'Офсетная'
+  types: [
+    {
+      name: 'сoated_paper',
+      title: 'Мелованная',
+      formats: [
+        'A4',
+        'A3',
+        'SRA3',
+      ]
+    },
+    {
+      name: 'colored_paper',
+      title: 'Цветная бумага',
+      formats: [
+        'CPA4',
+      ]
+    },
   ],
   formats: [
     {
@@ -278,8 +312,8 @@ const config = {
       ],
     },
     {
-      name: 'Colored_paper',
-      title: 'Цветная бумага',
+      name: 'CPA4',
+      title: 'A4',
       width: 297,
       height: 210,
       options: [
@@ -828,7 +862,7 @@ const prices = {
           "quantity": "200"
       }
   ],
-  "Colored_paper": [
+  "CPA4": [
       {
           "1": "81",
           "2": "98",
