@@ -37,7 +37,15 @@ document.addEventListener('DOMContentLoaded', function() {
     selectInit(item.title, item.name, typeSelect);
   });
 
-  config.formats.forEach(function(item) {
+  const currentType = config.types[0];
+  const formatsList = [];
+
+  currentType.formats.forEach(function(item) {
+    const currentItem = config.formats.find(format => format.name === item);
+    formatsList.push(currentItem);
+  });
+
+  formatsList.forEach(function(item) {
     selectInit(item.title, item.name, formatSelect);
   });
 
