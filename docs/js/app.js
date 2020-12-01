@@ -50,7 +50,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         removeOptions(formatSelect);
         currentType.formats.forEach(option => selectInit(option.name, option.name, formatSelect));
-        
+
+        // color update
+        if(currentType['front'] !== undefined && currentType['back'] !== undefined) {
+          removeOptions(colorFrontSelect);
+          removeOptions(colorBackSelect);
+          currentType.front.forEach(option => selectInit(option.name, option.value, colorFrontSelect));
+          currentType.back.forEach(option => selectInit(option.name, option.value, colorBackSelect));
+        }
+
         // factura init
         removeOptions(facturaSelect);
         if(currentType['factura'] !== undefined) {
@@ -70,28 +78,17 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   function updateOptions(format, isInit) {
-    format.density.forEach(function(option) {
-      selectInit(option, option, densitySelect);
-    });
     // density update
     removeOptions(densitySelect);
-    format.density.forEach(function(option) {
-      selectInit(option, option, densitySelect);
-    });
+    format.density.forEach(option => selectInit(option, option, densitySelect));
 
     if(isInit) {
       config.front.forEach((option) => selectInit(option.name, option.value, colorFrontSelect));
       config.back.forEach((option) => selectInit(option.name, option.value, colorBackSelect));
       config.quantity.forEach((option) => selectInit(option, option, quantitySelect));
-      selectInit('Нет', 0, facturaSelect)
+      selectInit('Нет', 0, facturaSelect);
+      collectValue();
     }
-
-    // color update
-    if(format['front'] !== undefined && format['back'] !== undefined) {
-      console.log(1);
-    }
-
-    collectValue();
   };
 
   function selectInit(item, value, select) {
@@ -114,6 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
     heightField.value = currentFormat.height;
 
     const totalList = prices[type].find(i => i.format === format && i.density === density && i.quantity === quantity);
+    console.log(prices.lam.find(i => i.format === format && i.quantity === quantity));
 
     let total = 0;
     if(color === 5) {
@@ -137,6 +135,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Евро 210x100
+// визитка 90х50
+// Евро визитка 85х55
 const config = {
   types: [
     {

@@ -4,6 +4,8 @@
   background-color: $bg;
   max-width: 310px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 
   ul {
     list-style: none;
@@ -70,6 +72,25 @@
 
       &:first-child {
         margin-left: 19px;
+      }
+    }
+  }
+
+  &-footer {
+    margin-top: auto;
+    
+    &-item {
+      display: flex;
+      margin-bottom: 2px;
+  
+      span {
+        min-width: 90px;
+      }
+      
+      a {
+        text-decoration: none;
+        color: $textcolor;
+        font-weight: bold;
       }
     }
   }
