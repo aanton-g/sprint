@@ -9,7 +9,20 @@
   }
 
   &-variants {
+    display: none;
     margin: 0 -3px;
+
+    &.is-active {
+      display: block;
+    }
+  }
+
+  &-content {
+    display: none;
+
+    &.is-active {
+      display: block;
+    }
   }
 
   &-button {
@@ -39,6 +52,12 @@
       color: $textcolor;
       margin: 0 30px 0 0;
       border: 1px solid $border;
+
+      &.is-active {
+        background-color: #E61A77;
+        border: 1px solid #E61A77;
+        color: white;
+      }
     }
 
     &-active {
@@ -56,13 +75,12 @@
 
   &-row {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     margin-top: 10px;
 
     &-title {
-      min-width: 115px;
-      padding-right: 5px;
-      margin: 0;
+      min-width: 105px;
+      margin: 17px 5px 0 0;
       font-size: 14px;
       line-height: 40px;
       font-weight: 700;
@@ -70,11 +88,17 @@
 
     &-fields {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
     }
 
     &-field {
       margin-right: 15px;
+
+      &-group {
+        display: flex;
+        flex-flow: row nowrap;
+      }
 
       label {
         display: block;

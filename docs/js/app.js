@@ -19,6 +19,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
+  const calcButton = document.querySelector('.calc-button-main');
+  const calcContent = document.querySelector('.calc-content');
+  const calcVariants = document.querySelector('.calc-variants');
+
+  calcButton.addEventListener('click', function() {
+    this.classList.toggle('is-active');
+    calcContent.classList.toggle('is-active');
+    calcVariants.classList.toggle('is-active');
+  });
+
   // calc
   const typeSelect = document.querySelector('#type');
   const formatSelect = document.querySelector('#format');
@@ -160,7 +170,10 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
       total = totalList[color];
     }
-    const lamValue = prices.lam.find(i => i.format === format && i.quantity === quantity)[lamination] || 0;
+
+    const laminationList = lamination !== '0' ? prices.lam.filter(i => i.format === format) : [];
+    const lamValue = laminationList && laminationList.length > 0 ? laminationList.find(i => i.quantity === quantity)[lamination] : 0;
+ 
     totalField.innerHTML = +total + +lamValue;
     totalOne.innerHTML = (+total + +lamValue) / quantity;
   };
