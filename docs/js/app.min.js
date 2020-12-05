@@ -1,24 +1,32 @@
 document.addEventListener('DOMContentLoaded', function() {
  
-  const navItems = document.querySelectorAll('.nav-item');
+  const navList = document.querySelector('.nav-list');
 
-  navItems.forEach(function(item){
-    const inner = item.querySelector('.nav-item-inner');
-    const dropdownItems = item.querySelectorAll('.nav-dropdown-item');
+  navList.addEventListener('click', function(e) {
+    const navItem = e.target.closest('.nav-item');
+    const dropdownItem = e.target.closest('.nav-dropdown-item');
+    const dropdownInner = e.target.closest('.nav-dropdown-inner');
 
-    inner.addEventListener('click', function() {
-      item.classList.toggle('is-active');
-    });
-
-    dropdownItems.forEach(function(item) {
-      const dropdownInner = item.querySelector('span');
-      
-      dropdownInner.addEventListener('click', function() {
-        item.classList.toggle('is-active');
-      });
-    });
+    if(navItem && !dropdownItem) {
+      if(!navItem.classList.contains('is-active')) {
+        const activeList = navList.querySelectorAll('.is-active') || [];
+        activeList.length > 0 && activeList.forEach(item => item.classList.remove('is-active'));
+        
+        navItem.classList.add('is-active');
+      } else {
+        navItem.classList.remove('is-active');
+      }
+    } else if(navItem && dropdownItem && !dropdownInner) {
+      if(!dropdownItem.classList.contains('is-active')) {
+        navItem.querySelector('.nav-dropdown-item.is-active') && navItem.querySelector('.nav-dropdown-item.is-active').classList.remove('is-active');
+        dropdownItem.classList.add('is-active');
+      } else {
+        dropdownItem.classList.remove('is-active');
+      }
+    }
   });
 
+  // calc view
   const calcButton = document.querySelector('.calc-button-main');
   const calcContent = document.querySelector('.calc-content');
   const calcVariants = document.querySelector('.calc-variants');
@@ -29,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
     calcVariants.classList.toggle('is-active');
   });
 
-  // calc
+  // calc functional
   const typeSelect = document.querySelector('#type');
   const formatSelect = document.querySelector('#format');
   const densitySelect = document.querySelector('#density');
@@ -141,14 +149,14 @@ document.addEventListener('DOMContentLoaded', function() {
       selectInit('Нет', 0, facturaSelect);
       collectValue();
     }
-  };
+  }
 
   function selectInit(item, value, select) {
     let opt = document.createElement('option');
     opt.value = value;
     opt.innerHTML = item;
     select.appendChild(opt);
-  };
+  }
 
   function collectValue() {
     const type = typeSelect.value;
@@ -176,10 +184,10 @@ document.addEventListener('DOMContentLoaded', function() {
  
     totalField.innerHTML = +total + +lamValue;
     totalOne.innerHTML = (+total + +lamValue) / quantity;
-  };
+  }
 
   function removeOptions(selectElement) {
-    var i, L = selectElement.options.length - 1;
+    let i, L = selectElement.options.length - 1;
     for(i = L; i >= 0; i--) {
        selectElement.remove(i);
     }
@@ -3060,4 +3068,4 @@ const prices = {
           "glossy": "1200"
       }
   ]
-}
+};

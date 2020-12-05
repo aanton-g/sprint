@@ -6,7 +6,8 @@
 	<meta charset="utf-8">
 	<title>Sprint</title>
 	<meta name="description" content="Sprint">
-	<meta name="viewport" content="width=device-width">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
 	<link rel="stylesheet" href="css/app.min.css">
 
 </head>
@@ -481,76 +482,41 @@
 					</div>
 				</div>
 			</div>
-
-			<div class="pages-items">
-				<div class="pages-item pages-item-category">
-					<div class="pages-item-image">
-						<img src="images/cat1.svg" alt="">
-					</div>
-
-					<a href="#" class="pages-item-title">Визитки</a>
+    </section>
+    
+    <section class="product">
+      <div class="product-inner">
+        <div class="product-slider">
+          <div class="swiper-container">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide" style="background-image:url(./images/logo.png)"></div>
+              <div class="swiper-slide" style="background-image:url(./images/logo.png)"></div>
+              <div class="swiper-slide" style="background-image:url(./images/logo.png)"></div>
+              <div class="swiper-slide" style="background-image:url(./images/logo.png)"></div>
+              <div class="swiper-slide" style="background-image:url(./images/logo.png)"></div>
+						</div>
+						<!-- Add Pagination -->
+    				<div class="swiper-pagination"></div>
+          </div>
 				</div>
-
-				<div class="pages-item pages-item-category">
-					<div class="pages-item-image">
-						<img src="images/cat2.svg" alt="">
-					</div>
-					
-					<a href="#" class="pages-item-title">Календари</a>
-				</div>
-
-				<div class="pages-item pages-item-category">
-					<div class="pages-item-image">
-						<img src="images/cat3.svg" alt="">
-					</div>
-					
-					<a href="#" class="pages-item-title">Евровизитки</a>
-				</div>
-
-				<div class="pages-item pages-item-category">
-					<div class="pages-item-image">
-						<img src="images/cat4.svg" alt="">
-					</div>
-					
-					<a href="#" class="pages-item-title">Плакаты</a>
-				</div>
-
-				<div class="pages-item pages-item-category">
-					<div class="pages-item-image">
-						<img src="images/cat5.svg" alt="">
-					</div>
-					
-					<a href="#" class="pages-item-title">Листовки</a>
-				</div>
-
-				<div class="pages-item pages-item-category">
-					<div class="pages-item-image">
-						<img src="images/cat6.svg" alt="">
-					</div>
-					
-					<a href="#" class="pages-item-title">Блокноты</a>
-				</div>
-
-				<div class="pages-item pages-item-category">
-					<div class="pages-item-image">
-						<img src="images/cat7.svg" alt="">
-					</div>
-					
-					<a href="#" class="pages-item-title">Наклейки</a>
-				</div>
-
-				<div class="pages-item pages-item-category">
-					<div class="pages-item-image">
-						<img src="images/cat8.svg" alt="">
-					</div>
-					
-					<a href="#" class="pages-item-title">Открытка</a>
-				</div>
-			</div>
-		</section>
+				
+				<div class="product-info"></div>
+      </div>
+    </section>
 	</main>
 
-	<script src="js/app.min.js"></script>
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  <script src="js/app.min.js"></script>
+
+  <!-- Initialize Swiper -->
+  <script>
+    var swiper = new Swiper('.swiper-container', {
+      pagination: {
+        el: '.swiper-pagination',
+        type: 'fraction',
+      },
+    });
+  </script>
 
 </body>
 </html>
