@@ -138,7 +138,19 @@
         border-radius: 9px;
         background-color: $bg;
         border: 1px solid $border;
-        pointer-events: none;
+
+        &#width, &#height {
+          pointer-events: none;
+        }
+
+        /* &#quantity-input {
+          &::-webkit-outer-spin-button,
+          &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+          }
+
+          -moz-appearance: textfield;
+        } */
       }
     }
   }

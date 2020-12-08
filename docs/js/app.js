@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const densitySelect = document.querySelector('#density');
   const colorFrontSelect = document.querySelector('#front');
   const colorBackSelect = document.querySelector('#back');
-  const quantitySelect = document.querySelector('#quantity');
+  const quantityInput = document.querySelector('#quantity-input');
   const facturaSelect = document.querySelector('#factura');
   const laminationSelect = document.querySelector('#lamination');
 
@@ -102,6 +102,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
+  quantityInput.addEventListener('input', function() {
+    const currentFormat = config.types.find(type => type.name === typeSelect.value).formats.find(format => format.name === formatSelect.value);
+    updateQuantity(currentFormat);
+    collectValue();
+  });
+
   function updateOptions(format, isInit) {
     // density update
     const currentDensity = densitySelect.value;
@@ -112,19 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // quantity update
-    const currentQuantity = quantitySelect.value;
-    removeOptions(quantitySelect);
-    if(format['quantity'] !== undefined) {
-      format.quantity.forEach((option) => selectInit(option, option, quantitySelect));
-      if(format.quantity.indexOf(+currentQuantity) !== -1) {
-        quantitySelect.selectedIndex = format.quantity.indexOf(+currentQuantity);
-      }
-    } else {
-      config.quantity.forEach((option) => selectInit(option, option, quantitySelect));
-      if(config.quantity.indexOf(+currentQuantity) !== -1) {
-        quantitySelect.selectedIndex = config.quantity.indexOf(+currentQuantity);
-      }
-    }
+    updateQuantity(format);
 
     // lam update
     const currentLamination = laminationSelect.value;
@@ -151,6 +145,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  function updateQuantity(format) {
+    // quantity update
+    const quantityMin = format.quantity !== undefined ? format.quantity[0] : config.quantity[0];
+    const quantityMax = format.quantity !== undefined ? format.quantity[format.quantity.length - 1] : config.quantity[config.quantity.length - 1];
+
+    quantityInput.min = quantityMin;
+    quantityInput.max = quantityMax;
+    
+    if(!quantityInput.value || quantityInput.value < quantityMin) {
+      quantityInput.value = quantityMin;
+    } else if(quantityInput.value > quantityMax) {
+      quantityInput.value = quantityMax;
+    }
+  }
+
   function selectInit(item, value, select) {
     let opt = document.createElement('option');
     opt.value = value;
@@ -162,28 +171,58 @@ document.addEventListener('DOMContentLoaded', function() {
     const type = typeSelect.value;
     const format = formatSelect.value;
     const density = densitySelect.value;
-    const quantity = quantitySelect.value;
+    const quantity = quantityInput.value;
     const lamination = laminationSelect.value;
     const color = +colorFrontSelect.value + +colorBackSelect.value;
 
     const currentFormat = config.types.find(i => i.name === type).formats.find(x => x.name === format);
 
+    let total = 0;
+    let lamValue = 0;
+    let lamOne;
+    const totalList = prices[type].filter(i => i.format === format && i.density === density).find(x => x.quantity === quantity);
+    const laminationList = lamination !== '0' ? prices.lam.filter(i => i.format === format) : [];
+    if(totalList !== undefined) {
+      total = color === 5 ? +totalList[colorFrontSelect.value] + +totalList[colorBackSelect.value] : totalList[color];
+      lamValue = laminationList && laminationList.length > 0 ? laminationList.find(i => i.quantity === quantity)[lamination] : 0;
+    } else {
+      let quantityMin, quantityMax;
+      if(currentFormat.quantity !== undefined) {
+        quantityMin = Math.max(...currentFormat.quantity.filter(v => v <= quantity));
+        quantityMax = Math.min(...currentFormat.quantity.filter(v => v > quantity));
+      } else {
+        quantityMin = Math.max(...config.quantity.filter(v => v <= quantity));
+        quantityMax = Math.min(...config.quantity.filter(v => v > quantity));
+      }
+
+      const totalListMin = /^-{0,1}\d+$/.test(quantityMin) && prices[type].find(i => i.format === format && i.density === density && +i.quantity === quantityMin);
+      const totalListMax = /^-{0,1}\d+$/.test(quantityMax) && prices[type].find(i => i.format === format && i.density === density && +i.quantity === quantityMax);
+      
+      let totalMin, totalMax;
+      if(color === 5) {
+        totalMin = totalListMin ? +totalListMin[colorFrontSelect.value] + +totalListMin[colorBackSelect.value] : 0;
+        totalMax = totalListMax ? +totalListMax[colorFrontSelect.value] + +totalListMax[colorBackSelect.value] : 0;
+      } else {
+        totalMin = totalListMin ? totalListMin[color] : 0;
+        totalMax = totalListMax ? totalListMax[color] : 0;
+      }
+
+      if(lamination !== '0') {
+        const lamValueMin = laminationList.find(i => +i.quantity === quantityMin)[lamination];
+        const lamValueMax = laminationList.find(i => +i.quantity === quantityMax)[lamination];
+        lamOne = ((lamValueMax - lamValueMin) / (totalListMax.quantity - totalListMin.quantity)).toFixed(2);
+      }
+
+      const one = ((totalMax - totalMin) / (totalListMax.quantity - totalListMin.quantity)).toFixed(2);
+      
+      lamValue = lamOne ? lamOne * quantity : 0;
+      total = +totalMin + +one * (+quantity - totalListMin.quantity);
+    }
+ 
+    totalField.innerHTML = (+total + +lamValue).toFixed(2);
+    totalOne.innerHTML = ((+total + +lamValue) / quantity).toFixed(2);
     widthField.value = currentFormat.width;
     heightField.value = currentFormat.height;
-    const totalList = prices[type].find(i => i.format === format && i.density === density && i.quantity === quantity);
-
-    let total = 0;
-    if(color === 5) {
-      total = +totalList[colorFrontSelect.value] + +totalList[colorBackSelect.value];
-    } else {
-      total = totalList[color];
-    }
-
-    const laminationList = lamination !== '0' ? prices.lam.filter(i => i.format === format) : [];
-    const lamValue = laminationList && laminationList.length > 0 ? laminationList.find(i => i.quantity === quantity)[lamination] : 0;
- 
-    totalField.innerHTML = +total + +lamValue;
-    totalOne.innerHTML = (+total + +lamValue) / quantity;
   }
 
   function removeOptions(selectElement) {
@@ -198,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 const config = {
   types: [
-    {
+    { // Оффсетная
       name: 'offset',
       title: 'Оффсетная',
       formats: [
@@ -209,6 +248,14 @@ const config = {
           density: [
             80,
           ],
+          quantity: [
+            1,
+            10,
+            20,
+            50,
+            100,
+            200
+          ],
         },
         {
           name: 'A3',
@@ -216,6 +263,14 @@ const config = {
           height: 297,
           density: [
             80,
+          ],
+          quantity: [
+            1,
+            10,
+            20,
+            50,
+            100,
+            200
           ],
           lam: [
             {
@@ -230,7 +285,7 @@ const config = {
         },
       ]
     },
-    {
+    { // Мелованная
       name: 'mel',
       title: 'Мелованная',
       factura: [
@@ -244,7 +299,7 @@ const config = {
         },
       ],
       formats: [
-        {
+        { // A7
           name: 'A7',
           width: 105,
           height: 74,
@@ -253,7 +308,7 @@ const config = {
             200,
           ],
         },
-        {
+        { // A6
           name: 'A6',
           width: 148,
           height: 105,
@@ -262,7 +317,7 @@ const config = {
             200,
           ],
         },
-        {
+        { // A5
           name: 'A5',
           width: 210,
           height: 148,
@@ -271,22 +326,38 @@ const config = {
             200,
           ]
         },
-        {
+        { // A4
           name: 'A4',
           width: 297,
           height: 210,
           density: [
             130,
             200,
-          ]
+          ],
+          quantity: [
+            1,
+            10,
+            20,
+            50,
+            100,
+            200
+          ],
         },
-        {
+        { // A3
           name: 'A3',
           width: 420,
           height: 297,
           density: [
             130,
             200,
+          ],
+          quantity: [
+            1,
+            10,
+            20,
+            50,
+            100,
+            200
           ],
           lam: [
             {
@@ -299,7 +370,7 @@ const config = {
             },
           ],
         },
-        {
+        { // ЕвроФлаер
           name: 'ЕвроФлаер',
           width: 210,
           height: 99,
@@ -320,11 +391,11 @@ const config = {
         },
       ]
     },
-    {
+    { // Каландрированная
       name: 'cal',
       title: 'Каландрированная',
       formats: [
-        {
+        { // A7
           name: 'A7',
           width: 105,
           height: 74,
@@ -336,7 +407,7 @@ const config = {
             300,
           ]
         },
-        {
+        { // A6
           name: 'A6',
           width: 148,
           height: 105,
@@ -348,7 +419,7 @@ const config = {
             300,
           ]
         },
-        {
+        { // A5
           name: 'A5',
           width: 210,
           height: 148,
@@ -360,7 +431,7 @@ const config = {
             300,
           ]
         },
-        {
+        { // A4
           name: 'A4',
           width: 297,
           height: 210,
@@ -370,15 +441,31 @@ const config = {
             200,
             250,
             300,
-          ]
+          ],
+          quantity: [
+            1,
+            10,
+            20,
+            50,
+            100,
+            200
+          ],
         },
-        {
+        { // A3
           name: 'A3',
           width: 420,
           height: 297,
           density: [
             220,
             280,
+          ],
+          quantity: [
+            1,
+            10,
+            20,
+            50,
+            100,
+            200
           ],
           lam: [
             {
@@ -391,7 +478,7 @@ const config = {
             },
           ],
         },
-        {
+        { // SRA3
           name: 'SRA3',
           width: 420,
           height: 297,
@@ -400,6 +487,14 @@ const config = {
             200,
             300,
           ],
+          quantity: [
+            1,
+            10,
+            20,
+            50,
+            100,
+            200
+          ],
           lam: [
             {
               value: 0,
@@ -407,7 +502,7 @@ const config = {
             },
           ],
         },
-        {
+        { // ЕвроФлаер
           name: 'ЕвроФлаер',
           width: 210,
           height: 99,
@@ -428,7 +523,7 @@ const config = {
             },
           ],
         },
-        {
+        { // Визитка
           name: 'Визитка',
           width: 90,
           height: 50,
@@ -443,7 +538,7 @@ const config = {
             500
           ]
         },
-        {
+        { // ЕвроВизитка
           name: 'ЕвроВизитка',
           width: 90,
           height: 50,
@@ -470,41 +565,73 @@ const config = {
         },
       ]
     },
-    {
+    { // Цветная бумага
       name: 'cp',
       title: 'Цветная бумага',
       formats: [
-        {
+        { // A7
           name: 'A7',
           width: 105,
           height: 74,
           density: [
             80,
-          ]
+          ],
+          quantity: [
+            1,
+            10,
+            20,
+            50,
+            100,
+            200
+          ],
         },
-        {
+        { // A6
           name: 'A6',
           width: 148,
           height: 105,
           density: [
             80,
-          ]
+          ],
+          quantity: [
+            1,
+            10,
+            20,
+            50,
+            100,
+            200
+          ],
         },
-        {
+        { // A5
           name: 'A5',
           width: 210,
           height: 148,
           density: [
             80,
-          ]
+          ],
+          quantity: [
+            1,
+            10,
+            20,
+            50,
+            100,
+            200
+          ],
         },
-        {
+        { // A4
           name: 'A4',
           width: 297,
           height: 210,
           density: [
             80,
-          ]
+          ],
+          quantity: [
+            1,
+            10,
+            20,
+            50,
+            100,
+            200
+          ],
         },
       ],
       front: [
@@ -575,79 +702,13 @@ const config = {
 const prices = {
   "offset": [
       {
-          "format": "A7",
+          "1": "10",
+          "2": "15",
+          "4": "25",
+          "8": "42",
+          "format": "A4",
           "density": "80",
-          "quantity": "10"
-      },
-      {
-          "format": "A7",
-          "density": "80",
-          "quantity": "20"
-      },
-      {
-          "format": "A7",
-          "density": "80",
-          "quantity": "50"
-      },
-      {
-          "format": "A7",
-          "density": "80",
-          "quantity": "100"
-      },
-      {
-          "format": "A7",
-          "density": "80",
-          "quantity": "200"
-      },
-      {
-          "format": "A6",
-          "density": "80",
-          "quantity": "10"
-      },
-      {
-          "format": "A6",
-          "density": "80",
-          "quantity": "20"
-      },
-      {
-          "format": "A6",
-          "density": "80",
-          "quantity": "50"
-      },
-      {
-          "format": "A6",
-          "density": "80",
-          "quantity": "100"
-      },
-      {
-          "format": "A6",
-          "density": "80",
-          "quantity": "200"
-      },
-      {
-          "format": "A5",
-          "density": "80",
-          "quantity": "10"
-      },
-      {
-          "format": "A5",
-          "density": "80",
-          "quantity": "20"
-      },
-      {
-          "format": "A5",
-          "density": "80",
-          "quantity": "50"
-      },
-      {
-          "format": "A5",
-          "density": "80",
-          "quantity": "100"
-      },
-      {
-          "format": "A5",
-          "density": "80",
-          "quantity": "200"
+          "quantity": "1"
       },
       {
           "1": "70",
@@ -693,6 +754,15 @@ const prices = {
           "format": "A4",
           "density": "80",
           "quantity": "200"
+      },
+      {
+          "1": "15",
+          "2": "20",
+          "4": "38",
+          "8": "60",
+          "format": "A3",
+          "density": "80",
+          "quantity": "1"
       },
       {
           "1": "84",
@@ -742,6 +812,13 @@ const prices = {
   ],
   "cp": [
       {
+          "1": "12",
+          "2": "16",
+          "format": "A4",
+          "density": "80",
+          "quantity": "1"
+      },
+      {
           "1": "77",
           "2": "93",
           "format": "A4",
@@ -775,6 +852,13 @@ const prices = {
           "format": "A4",
           "density": "80",
           "quantity": "200"
+      },
+      {
+          "1": "12",
+          "2": "14",
+          "format": "A5",
+          "density": "80",
+          "quantity": "1"
       },
       {
           "1": "77",
@@ -812,6 +896,13 @@ const prices = {
           "quantity": "200"
       },
       {
+          "1": "12",
+          "2": "16",
+          "format": "A6",
+          "density": "80",
+          "quantity": "1"
+      },
+      {
           "1": "98",
           "2": "105",
           "format": "A6",
@@ -845,6 +936,13 @@ const prices = {
           "format": "A6",
           "density": "80",
           "quantity": "200"
+      },
+      {
+          "1": "13",
+          "2": "18",
+          "format": "A7",
+          "density": "80",
+          "quantity": "1"
       },
       {
           "1": "82",
@@ -1559,6 +1657,15 @@ const prices = {
           "quantity": "200"
       },
       {
+          "1": "13",
+          "2": "17",
+          "4": "25",
+          "8": "42",
+          "format": "A4",
+          "density": "90",
+          "quantity": "1"
+      },
+      {
           "1": "77",
           "2": "93",
           "4": "216",
@@ -1602,6 +1709,15 @@ const prices = {
           "format": "A4",
           "density": "90",
           "quantity": "200"
+      },
+      {
+          "1": "15",
+          "2": "18",
+          "4": "29",
+          "8": "48",
+          "format": "A4",
+          "density": "120",
+          "quantity": "1"
       },
       {
           "1": "82",
@@ -1649,6 +1765,15 @@ const prices = {
           "quantity": "200"
       },
       {
+          "1": "28",
+          "2": "36",
+          "4": "33",
+          "8": "56",
+          "format": "A4",
+          "density": "250",
+          "quantity": "1"
+      },
+      {
           "1": "197",
           "2": "280",
           "4": "249",
@@ -1692,6 +1817,15 @@ const prices = {
           "format": "A4",
           "density": "250",
           "quantity": "200"
+      },
+      {
+          "1": "27",
+          "2": "39",
+          "4": "35",
+          "8": "60",
+          "format": "A4",
+          "density": "300",
+          "quantity": "1"
       },
       {
           "1": "210",
@@ -1739,6 +1873,15 @@ const prices = {
           "quantity": "200"
       },
       {
+          "1": "27",
+          "2": "33",
+          "4": "60",
+          "8": "110",
+          "format": "A3",
+          "density": "220",
+          "quantity": "1"
+      },
+      {
           "1": "145",
           "2": "176",
           "4": "366",
@@ -1782,6 +1925,15 @@ const prices = {
           "format": "A3",
           "density": "220",
           "quantity": "200"
+      },
+      {
+          "1": "33",
+          "2": "62",
+          "4": "66",
+          "8": "122",
+          "format": "A3",
+          "density": "280",
+          "quantity": "1"
       },
       {
           "1": "283",
@@ -1829,6 +1981,15 @@ const prices = {
           "quantity": "200"
       },
       {
+          "1": "25",
+          "2": "31",
+          "4": "52",
+          "8": "94",
+          "format": "SRA3",
+          "density": "120",
+          "quantity": "1"
+      },
+      {
           "1": "113",
           "2": "145",
           "4": "321",
@@ -1874,6 +2035,15 @@ const prices = {
           "quantity": "200"
       },
       {
+          "1": "33",
+          "2": "59",
+          "4": "62",
+          "8": "124",
+          "format": "SRA3",
+          "density": "200",
+          "quantity": "1"
+      },
+      {
           "1": "274",
           "2": "397",
           "4": "361",
@@ -1917,6 +2087,15 @@ const prices = {
           "format": "SRA3",
           "density": "200",
           "quantity": "200"
+      },
+      {
+          "1": "55",
+          "2": "70",
+          "4": "72",
+          "8": "134",
+          "format": "SRA3",
+          "density": "300",
+          "quantity": "1"
       },
       {
           "1": "325",
@@ -2506,6 +2685,15 @@ const prices = {
           "quantity": "200"
       },
       {
+          "1": "15",
+          "2": "18",
+          "4": "29",
+          "8": "63",
+          "format": "A4",
+          "density": "130",
+          "quantity": "1"
+      },
+      {
           "1": "85",
           "2": "101",
           "4": "224",
@@ -2549,6 +2737,15 @@ const prices = {
           "format": "A4",
           "density": "130",
           "quantity": "200"
+      },
+      {
+          "1": "17",
+          "2": "21",
+          "4": "42",
+          "8": "71",
+          "format": "A4",
+          "density": "200",
+          "quantity": "1"
       },
       {
           "1": "100",
@@ -2596,6 +2793,15 @@ const prices = {
           "quantity": "200"
       },
       {
+          "1": "20",
+          "2": "26",
+          "4": "55",
+          "8": "100",
+          "format": "A3",
+          "density": "130",
+          "quantity": "1"
+      },
+      {
           "1": "113",
           "2": "145",
           "4": "334",
@@ -2639,6 +2845,15 @@ const prices = {
           "format": "A3",
           "density": "130",
           "quantity": "200"
+      },
+      {
+          "1": "27",
+          "2": "30",
+          "4": "80",
+          "8": "140",
+          "format": "A3",
+          "density": "200",
+          "quantity": "1"
       },
       {
           "1": "144",
@@ -2850,6 +3065,13 @@ const prices = {
       {
           "format": "A5",
           "density": "100",
+          "quantity": "1",
+          "glossy": "40",
+          "matte": "55"
+      },
+      {
+          "format": "A5",
+          "density": "100",
           "quantity": "10",
           "glossy": "370",
           "matte": "520"
@@ -2885,6 +3107,13 @@ const prices = {
       {
           "format": "A4",
           "density": "100",
+          "quantity": "1",
+          "glossy": "45",
+          "matte": "60"
+      },
+      {
+          "format": "A4",
+          "density": "100",
           "quantity": "10",
           "glossy": "410",
           "matte": "550"
@@ -2916,6 +3145,12 @@ const prices = {
           "quantity": "200",
           "glossy": "6200",
           "matte": "9000"
+      },
+      {
+          "format": "A3",
+          "density": "80",
+          "quantity": "1",
+          "glossy": "58"
       },
       {
           "format": "A3",
@@ -3067,5 +3302,127 @@ const prices = {
           "quantity": "500",
           "glossy": "1200"
       }
+  ],
+  "adhesive (самоклейка)": [
+      {
+          "format": "A4",
+          "density": "80",
+          "quantity": "1"
+      },
+      {
+          "1": "209",
+          "4": "321",
+          "format": "A4",
+          "density": "80",
+          "quantity": "10"
+      },
+      {
+          "1": "349",
+          "4": "541",
+          "format": "A4",
+          "density": "80",
+          "quantity": "20"
+      },
+      {
+          "1": "764",
+          "4": "1097",
+          "format": "A4",
+          "density": "80",
+          "quantity": "50"
+      },
+      {
+          "1": "1448",
+          "4": "2081",
+          "format": "A4",
+          "density": "80",
+          "quantity": "100"
+      },
+      {
+          "1": "2816",
+          "4": "4070",
+          "format": "A4",
+          "density": "80",
+          "quantity": "200"
+      },
+      {
+          "format": "A3",
+          "density": "80",
+          "quantity": "1"
+      },
+      {
+          "1": "334",
+          "4": "527",
+          "format": "A3",
+          "density": "80",
+          "quantity": "10"
+      },
+      {
+          "1": "611",
+          "4": "921",
+          "format": "A3",
+          "density": "80",
+          "quantity": "20"
+      },
+      {
+          "1": "1434",
+          "4": "2066",
+          "format": "A3",
+          "density": "80",
+          "quantity": "50"
+      },
+      {
+          "1": "2802",
+          "4": "4056",
+          "format": "A3",
+          "density": "80",
+          "quantity": "100"
+      },
+      {
+          "1": "5510",
+          "4": "7992",
+          "format": "A3",
+          "density": "80",
+          "quantity": "200"
+      },
+      {
+          "format": "SRA3",
+          "density": "80",
+          "quantity": "1"
+      },
+      {
+          "1": "334",
+          "4": "527",
+          "format": "SRA3",
+          "density": "80",
+          "quantity": "10"
+      },
+      {
+          "1": "611",
+          "4": "921",
+          "format": "SRA3",
+          "density": "80",
+          "quantity": "20"
+      },
+      {
+          "1": "1434",
+          "4": "2066",
+          "format": "SRA3",
+          "density": "80",
+          "quantity": "50"
+      },
+      {
+          "1": "2802",
+          "4": "4056",
+          "format": "SRA3",
+          "density": "80",
+          "quantity": "100"
+      },
+      {
+          "1": "5510",
+          "4": "7992",
+          "format": "SRA3",
+          "density": "80",
+          "quantity": "200"
+      }
   ]
-};
+}
