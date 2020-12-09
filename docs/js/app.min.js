@@ -105,13 +105,14 @@ document.addEventListener('DOMContentLoaded', function() {
   quantityInput.addEventListener('input', function() {
     const currentFormat = config.types.find(type => type.name === typeSelect.value).formats.find(format => format.name === formatSelect.value);
     const max = currentFormat.quantity !== undefined ? currentFormat.quantity[currentFormat.quantity.length - 1] : config.quantity[config.quantity.length - 1];
-    if(this.value && this.value > 0 && this.value <= max) {
+    console.log(this.value);
+    if(this.value && this.value > 0) {
+      if(this.value > max) {
+        updateQuantity(currentFormat);
+      }
       setTimeout(function() {
         collectValue();
       }, 300);
-    } else {
-      updateQuantity(currentFormat);
-      collectValue();
     }
   });
 
