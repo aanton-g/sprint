@@ -104,8 +104,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
   quantityInput.addEventListener('input', function() {
     const currentFormat = config.types.find(type => type.name === typeSelect.value).formats.find(format => format.name === formatSelect.value);
-    updateQuantity(currentFormat);
-    collectValue();
+    const max = currentFormat.quantity !== undefined ? currentFormat.quantity[currentFormat.quantity.length - 1] : config.quantity[config.quantity.length - 1];
+    if(this.value && this.value > 0 && this.value <= max) {
+      setTimeout(function() {
+        collectValue();
+      }, 300);
+    } else {
+      updateQuantity(currentFormat);
+      collectValue();
+    }
   });
 
   function updateOptions(format, isInit) {
@@ -178,8 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentFormat = config.types.find(i => i.name === type).formats.find(x => x.name === format);
 
     let total = 0;
-    let lamValue = 0;
-    let lamOne;
+    let lamValue, lamOne;
     const totalList = prices[type].filter(i => i.format === format && i.density === density).find(x => x.quantity === quantity);
     const laminationList = lamination !== '0' ? prices.lam.filter(i => i.format === format) : [];
     if(totalList !== undefined) {
