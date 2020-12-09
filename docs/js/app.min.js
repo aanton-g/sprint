@@ -46,12 +46,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const quantityInput = document.querySelector('#quantity-input');
   const facturaSelect = document.querySelector('#factura');
   const laminationSelect = document.querySelector('#lamination');
-
   const widthField = document.querySelector('#width');
   const heightField = document.querySelector('#height');
   const totalField = document.querySelector('#total');
   const totalOne = document.querySelector('#calc-footer-total');
-
   const selects = document.querySelectorAll('.calc-row select');
 
   config.types.forEach(function(item) {
@@ -66,7 +64,6 @@ document.addEventListener('DOMContentLoaded', function() {
     select.addEventListener('change', function() {
       if(select.id === 'type') {
         const currentType = config.types.find(type => type.name === this.value);
-
         const currentFormat = formatSelect.value;
         removeOptions(formatSelect);
         currentType.formats.forEach(option => selectInit(option.name, option.name, formatSelect));
@@ -86,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
           currentType.back.forEach(option => selectInit(option.name, option.value, colorBackSelect));
         }
 
-        // factura init
+        // factura update
         removeOptions(facturaSelect);
         if(currentType['factura'] !== undefined) {
           currentType.factura.forEach(option => selectInit(option.name, option.name, facturaSelect));
@@ -103,32 +100,67 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   quantityInput.addEventListener('input', function() {
+    const quantityRow = quantityInput.closest('.calc-row-field');
+    const errorText = quantityRow.querySelector('.calc-row-field-error');
     const currentFormat = config.types.find(type => type.name === typeSelect.value).formats.find(format => format.name === formatSelect.value);
+    const min = currentFormat.quantity !== undefined ? currentFormat.quantity[0] : config.quantity[0];
     const max = currentFormat.quantity !== undefined ? currentFormat.quantity[currentFormat.quantity.length - 1] : config.quantity[config.quantity.length - 1];
-    console.log(this.value);
+
     if(this.value && this.value > 0) {
       if(this.value > max) {
         updateQuantity(currentFormat);
       }
-      setTimeout(function() {
+
+      if(this.value < min) {
+        quantityRow.classList.add('has-error');
+        errorText.innerHTML = `Минимальный тираж ${min}шт.`
+      } else {
+        quantityRow.classList.remove('has-error');
         collectValue();
-      }, 300);
+      }
     }
   });
 
   function updateOptions(format, isInit) {
     // density update
+    updateDensity(format);
+    // quantity update
+    updateQuantity(format);
+    // lam update
+    laminationUpdate(format);
+
+    if(isInit) {
+      config.front.forEach((option) => selectInit(option.name, option.value, colorFrontSelect));
+      config.back.forEach((option) => selectInit(option.name, option.value, colorBackSelect));
+      selectInit('Нет', 0, facturaSelect);
+      collectValue();
+    }
+  }
+
+  function updateDensity(format) {
     const currentDensity = densitySelect.value;
     removeOptions(densitySelect);
     format.density.forEach(option => selectInit(option, option, densitySelect));
     if(format.density.indexOf(+currentDensity) !== -1) {
       densitySelect.selectedIndex = format.density.indexOf(+currentDensity);
     }
+  }
 
-    // quantity update
-    updateQuantity(format);
+  function updateQuantity(format) {
+    const quantityMin = format.quantity !== undefined ? format.quantity[0] : config.quantity[0];
+    const quantityMax = format.quantity !== undefined ? format.quantity[format.quantity.length - 1] : config.quantity[config.quantity.length - 1];
 
-    // lam update
+    quantityInput.min = quantityMin;
+    quantityInput.max = quantityMax;
+    
+    if(!quantityInput.value || quantityInput.value < quantityMin) {
+      quantityInput.value = quantityMin;
+    } else if(quantityInput.value > quantityMax) {
+      quantityInput.value = quantityMax;
+    }
+  }
+
+  function laminationUpdate(format) {
     const currentLamination = laminationSelect.value;
     removeOptions(laminationSelect);
     if(format['lam'] !== undefined) {
@@ -143,28 +175,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if(index !== -1) {
         laminationSelect.selectedIndex = index;
       }
-    }
-    
-    if(isInit) {
-      config.front.forEach((option) => selectInit(option.name, option.value, colorFrontSelect));
-      config.back.forEach((option) => selectInit(option.name, option.value, colorBackSelect));
-      selectInit('Нет', 0, facturaSelect);
-      collectValue();
-    }
-  }
-
-  function updateQuantity(format) {
-    // quantity update
-    const quantityMin = format.quantity !== undefined ? format.quantity[0] : config.quantity[0];
-    const quantityMax = format.quantity !== undefined ? format.quantity[format.quantity.length - 1] : config.quantity[config.quantity.length - 1];
-
-    quantityInput.min = quantityMin;
-    quantityInput.max = quantityMax;
-    
-    if(!quantityInput.value || quantityInput.value < quantityMin) {
-      quantityInput.value = quantityMin;
-    } else if(quantityInput.value > quantityMax) {
-      quantityInput.value = quantityMax;
     }
   }
 
@@ -193,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
       total = color === 5 ? +totalList[colorFrontSelect.value] + +totalList[colorBackSelect.value] : totalList[color];
       lamValue = laminationList && laminationList.length > 0 ? laminationList.find(i => i.quantity === quantity)[lamination] : 0;
     } else {
-      let quantityMin, quantityMax;
+      let quantityMin, quantityMax, totalMin, totalMax;
       if(currentFormat.quantity !== undefined) {
         quantityMin = Math.max(...currentFormat.quantity.filter(v => v <= quantity));
         quantityMax = Math.min(...currentFormat.quantity.filter(v => v > quantity));
@@ -205,7 +215,6 @@ document.addEventListener('DOMContentLoaded', function() {
       const totalListMin = /^-{0,1}\d+$/.test(quantityMin) && prices[type].find(i => i.format === format && i.density === density && +i.quantity === quantityMin);
       const totalListMax = /^-{0,1}\d+$/.test(quantityMax) && prices[type].find(i => i.format === format && i.density === density && +i.quantity === quantityMax);
       
-      let totalMin, totalMax;
       if(color === 5) {
         totalMin = totalListMin ? +totalListMin[colorFrontSelect.value] + +totalListMin[colorBackSelect.value] : 0;
         totalMax = totalListMax ? +totalListMax[colorFrontSelect.value] + +totalListMax[colorBackSelect.value] : 0;
@@ -230,6 +239,8 @@ document.addEventListener('DOMContentLoaded', function() {
     totalOne.innerHTML = ((+total + +lamValue) / quantity).toFixed(2);
     widthField.value = currentFormat.width;
     heightField.value = currentFormat.height;
+    
+    document.querySelector('.calc-preview').innerHTML = `${config.types.find(i => i.name === type).title} - ${currentFormat.name} - ${density}г/кв.м - ${quantity}шт.`
   }
 
   function removeOptions(selectElement) {

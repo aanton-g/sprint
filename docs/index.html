@@ -396,82 +396,86 @@
 				</div>
 
 				<div class="calc-content is-active">
-					<div class="calc-row">
-						<h5 class="calc-row-title">Бумага</h5>
-
-						<div class="calc-row-fields">
-							<div class="calc-row-field">
-								<label for="type">Тип</label>
-								<select name="type" id="type"></select>
-							</div>
-
-							<div class="calc-row-field">
-								<label for="factura">Фактура</label>
-								<select name="factura" id="factura"></select>
-							</div>
-
-							<div class="calc-row-field">
-								<label for="density">Плотность</label>
-								<select name="density" class="density" id="density"></select>
-							</div>
-						</div>
-					</div>
-
-					<div class="calc-row">
-						<h5 class="calc-row-title">Изделие</h5>
-
-						<div class="calc-row-fields">
-							<div class="calc-row-field">
-								<label for="format">Формат</label>
-								<select name="format" class="format" id="format"></select>
-							</div>
-
-							<div class="calc-row-field-group">
+					<div class="calc-rows">
+						<div class="calc-row">
+							<h5 class="calc-row-title">Бумага</h5>
+	
+							<div class="calc-row-fields">
 								<div class="calc-row-field">
-									<label for="width">Ширина</label>
-									<input type="text" name="width" id="width" placeholder="0">
+									<label for="type">Тип</label>
+									<select name="type" id="type"></select>
 								</div>
 	
 								<div class="calc-row-field">
-									<label for="height">Высота</label>
-									<input type="text" name="height" id="height" placeholder="0">
+									<label for="factura">Фактура</label>
+									<select name="factura" id="factura"></select>
+								</div>
+	
+								<div class="calc-row-field">
+									<label for="density">Плотность</label>
+									<select name="density" class="density" id="density"></select>
 								</div>
 							</div>
-
-							<div class="calc-row-field">
-								<label for="quantity">Тираж</label>
-								<!-- <select name="quantity" class="quantity" id="quantity"></select> -->
-								<input type="number" id="quantity-input">
+						</div>
+	
+						<div class="calc-row">
+							<h5 class="calc-row-title">Изделие</h5>
+	
+							<div class="calc-row-fields">
+								<div class="calc-row-field">
+									<label for="format">Формат</label>
+									<select name="format" class="format" id="format"></select>
+								</div>
+	
+								<div class="calc-row-field-group">
+									<div class="calc-row-field">
+										<label for="width">Ширина</label>
+										<input type="text" name="width" id="width" placeholder="0">
+									</div>
+		
+									<div class="calc-row-field">
+										<label for="height">Высота</label>
+										<input type="text" name="height" id="height" placeholder="0">
+									</div>
+								</div>
+	
+								<div class="calc-row-field">
+									<label for="quantity">Тираж</label>
+									<input type="number" id="quantity-input">
+									<div class="calc-row-field-error"></div>
+								</div>
+							</div>
+						</div>
+	
+						<div class="calc-row">
+							<h5 class="calc-row-title">Красочность</h5>
+	
+							<div class="calc-row-fields">
+								<div class="calc-row-field">
+									<label for="front">Лицо</label>
+									<select name="front" class="color" id="front"></select>
+								</div>
+	
+								<div class="calc-row-field">
+									<label for="back">Оборот</label>
+									<select name="back" class="color" id="back"></select>
+								</div>
+							</div>
+						</div>
+	
+						<div class="calc-row">
+							<h5 class="calc-row-title">Ламинация</h5>
+	
+							<div class="calc-row-fields">
+								<div class="calc-row-field">
+									<label for="lamination"></label>
+									<select name="lamination" id="lamination"></select>
+								</div>
 							</div>
 						</div>
 					</div>
 
-					<div class="calc-row">
-						<h5 class="calc-row-title">Красочность</h5>
-
-						<div class="calc-row-fields">
-							<div class="calc-row-field">
-								<label for="front">Лицо</label>
-								<select name="front" class="color" id="front"></select>
-							</div>
-
-							<div class="calc-row-field">
-								<label for="back">Оборот</label>
-								<select name="back" class="color" id="back"></select>
-							</div>
-						</div>
-					</div>
-
-					<div class="calc-row">
-						<h5 class="calc-row-title">Ламинация</h5>
-
-						<div class="calc-row-fields">
-							<div class="calc-row-field">
-								<label for="lamination"></label>
-								<select name="lamination" id="lamination"></select>
-							</div>
-						</div>
-					</div>
+					<div class="calc-preview"></div>
 
 					<div class="calc-footer">
 						<div class="calc-footer-info">
