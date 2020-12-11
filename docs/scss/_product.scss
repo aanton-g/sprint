@@ -1,6 +1,37 @@
 .product {
   &-inner {
     padding: 20px;
+    display: flex;
+  }
+
+  &-info {
+    display: flex;
+    flex-direction: column;
+
+    h1 {
+      font-size: 28px;
+      margin: 0 0 20px;
+    }
+
+    &-list {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    &-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: auto;
+    }
+  }
+
+  &-total {
+    font-size: 38px;
+    font-weight: 700;
+    margin-right: 10px;
+    white-space: nowrap;
+    margin: 10px 10px 10px 0;
   }
 
   &-slider {
@@ -9,6 +40,7 @@
     border: 2px solid black;
     border-radius: 9px;
     padding: 2px;
+    margin-right: 20px;
   }
 
   .swiper-container {

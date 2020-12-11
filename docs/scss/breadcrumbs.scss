@@ -1,0 +1,25 @@
+.breadcrumbs {
+  padding: 20px;
+
+  &-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+
+    li {
+      margin: 0 3px;
+    }
+
+    a {
+      text-decoration: none;
+      color: $textcolor;
+      font-weight: 600;
+
+      &:hover, &:focus {
+        color: $textcolor;
+      }
+    }
+  }
+}

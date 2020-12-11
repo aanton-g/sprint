@@ -386,103 +386,15 @@
 	</header>
 
 	<main class="main">
-		<section class="pages">
-			<div class="calc">
-				<div class="calc-controls">
-					<div class="calc-button calc-button-main is-active">Калькулятор</div>
-
-				  <div class="calc-variants">
-						<div class="calc-button is-active">Цифровой</div>
-					</div>
-				</div>
-
-				<div class="calc-content">
-					<div class="calc-row">
-						<h5 class="calc-row-title">Бумага</h5>
-
-						<div class="calc-row-fields">
-							<div class="calc-row-field">
-								<label for="type">Тип</label>
-								<select name="type" id="type"></select>
-							</div>
-
-							<div class="calc-row-field">
-								<label for="factura">Фактура</label>
-								<select name="factura" id="factura"></select>
-							</div>
-
-							<div class="calc-row-field">
-								<label for="density">Плотность</label>
-								<select name="density" class="density" id="density"></select>
-							</div>
-						</div>
-					</div>
-
-					<div class="calc-row">
-						<h5 class="calc-row-title">Изделие</h5>
-
-						<div class="calc-row-fields">
-							<div class="calc-row-field">
-								<label for="format">Формат</label>
-								<select name="format" class="format" id="format"></select>
-							</div>
-
-							<div class="calc-row-field-group">
-								<div class="calc-row-field">
-									<label for="width">Ширина</label>
-									<input type="text" name="width" id="width" placeholder="0">
-								</div>
-	
-								<div class="calc-row-field">
-									<label for="height">Высота</label>
-									<input type="text" name="height" id="height" placeholder="0">
-								</div>
-							</div>
-
-							<div class="calc-row-field">
-								<label for="quantity">Тираж</label>
-								<select name="quantity" class="quantity" id="quantity"></select>
-							</div>
-						</div>
-					</div>
-
-					<div class="calc-row">
-						<h5 class="calc-row-title">Красочность</h5>
-
-						<div class="calc-row-fields">
-							<div class="calc-row-field">
-								<label for="front">Лицо</label>
-								<select name="front" class="color" id="front"></select>
-							</div>
-
-							<div class="calc-row-field">
-								<label for="back">Оборот</label>
-								<select name="back" class="color" id="back"></select>
-							</div>
-						</div>
-					</div>
-
-					<div class="calc-row">
-						<h5 class="calc-row-title">Ламинация</h5>
-
-						<div class="calc-row-fields">
-							<div class="calc-row-field">
-								<label for="lamination"></label>
-								<select name="lamination" id="lamination"></select>
-							</div>
-						</div>
-					</div>
-
-					<div class="calc-footer">
-						<div class="calc-footer-info">
-							<span>Цена за единицу: <span id="calc-footer-total"></span> ₽</span>
-							<h3>Цена: <span id="total">0</span> руб.</h3>
-						</div>
-						<div class="calc-button calc-button-cta">Оформить заказ</div>
-					</div>
-				</div>
-			</div>
-    </section>
+		<section class="breadcrumbs">
+			<ul class="breadcrumbs-list">
+				<li><a href="#">Главная</a></li>
+				<li>/</li>
+				<li><a href="#">Офсетная печать</a></li>
+				<li>/</li>
+				<li><a href="#">Визитки</a></li>
+			</ul>
+		</section>
     
     <section class="product">
       <div class="product-inner">
@@ -500,7 +412,24 @@
           </div>
 				</div>
 				
-				<div class="product-info"></div>
+				<div class="product-info">
+					<h1 class="product-title">2 000 визиток «90x50 мм», красочность печати 4+4, картон 300 г/м²</h1>
+
+					<ul class="product-info-list">
+						<li>Дата готовности: 14.12.2020 - 15.12.2020</li>
+						<li>Доставка по г. Севастополь: Бесплатная</li>
+					</ul>
+
+					<div class="product-info-footer">
+						<div class="product-total">1900 руб.</div>
+
+						<div class="product-buttons">
+							<button class="button button-blue">В корзину</button>
+							<button class="button button-cta">Купить в один клик</button>
+						</div>
+					</div>
+					
+				</div>
       </div>
     </section>
 	</main>
