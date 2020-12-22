@@ -338,13 +338,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const quantity = fotoQuantity.value;
 
         let quantityIndex = 0;
-        if(quantity > 0 && quantity <= 100) {
-          quantityIndex = 0;
-        } else if(quantity > 100 && quantity <= 500) {
-          quantityIndex = 1;
-        } else if(quantity > 500) {
-          quantityIndex = 2;
+        if(format === '10x15') {
+          if(quantity > 0 && quantity <= 100) {
+            quantityIndex = 0;
+          } else if(quantity > 100 && quantity <= 500) {
+            quantityIndex = 1;
+          } else if(quantity > 500) {
+            quantityIndex = 2;
+          }
+        } else {
+          if(quantity > 0 && quantity <= 50) {
+            quantityIndex = 0;
+          } else if(quantity > 50) {
+            quantityIndex = 1;
+          }
         }
+        console.log(quantityIndex);
+        console.log(prices.foto.filter(x => x.format === format));
 
         const currentFormat = foto_config.formats.find(x => x.name === format);
         const total = prices.foto.filter(x => x.format === format)[quantityIndex][texture] * quantity;
@@ -3416,128 +3426,103 @@ const prices = {
       },
       {
           "format": "A3",
-          "density": "80",
+          "density": "100",
           "quantity": "1",
           "glossy": "58"
       },
       {
           "format": "A3",
-          "density": "80",
+          "density": "100",
           "quantity": "10",
           "glossy": "530"
       },
       {
           "format": "A3",
-          "density": "80",
+          "density": "100",
           "quantity": "20",
           "glossy": "920"
       },
       {
           "format": "A3",
-          "density": "80",
+          "density": "100",
           "quantity": "50",
           "glossy": "2100"
       },
       {
           "format": "A3",
-          "density": "80",
+          "density": "100",
           "quantity": "100",
           "glossy": "4200"
       },
       {
           "format": "A3",
-          "density": "80",
+          "density": "100",
           "quantity": "200",
           "glossy": "8400"
       },
       {
           "format": "ЕвроФлаер",
-          "density": "80",
+          "density": "100",
           "quantity": "10",
           "glossy": "240"
       },
       {
           "format": "ЕвроФлаер",
-          "density": "80",
+          "density": "100",
           "quantity": "20",
           "glossy": "340"
       },
       {
           "format": "ЕвроФлаер",
-          "density": "80",
+          "density": "100",
           "quantity": "50",
           "glossy": "770"
       },
       {
           "format": "ЕвроФлаер",
-          "density": "80",
+          "density": "100",
           "quantity": "100",
           "glossy": "1270"
       },
       {
           "format": "ЕвроФлаер",
-          "density": "80",
+          "density": "100",
           "quantity": "200",
           "glossy": "2500"
       },
       {
           "format": "Визитка",
-          "density": "80",
-          "quantity": "100",
-          "glossy": "340"
-      },
-      {
-          "format": "Визитка",
-          "density": "80",
-          "quantity": "200",
-          "glossy": "600"
-      },
-      {
-          "format": "Визитка",
-          "density": "80",
-          "quantity": "300",
-          "glossy": "900"
-      },
-      {
-          "format": "Визитка",
-          "density": "80",
-          "quantity": "400",
-          "glossy": "1100"
-      },
-      {
-          "format": "Визитка",
-          "density": "80",
-          "quantity": "500",
-          "glossy": "1250"
-      },
-      {
-          "format": "Визитка",
           "density": "100",
           "quantity": "100",
+          "glossy": "340",
           "matte": "490"
       },
       {
           "format": "Визитка",
           "density": "100",
           "quantity": "200",
+          "glossy": "600",
           "matte": "940"
       },
       {
           "format": "Визитка",
           "density": "100",
           "quantity": "300",
+          "glossy": "900",
           "matte": "1300"
       },
       {
           "format": "Визитка",
           "density": "100",
           "quantity": "400",
+          "glossy": "1100",
           "matte": "1700"
       },
       {
           "format": "Визитка",
           "density": "100",
           "quantity": "500",
+          "glossy": "1250",
           "matte": "2000"
       },
       {
@@ -3859,7 +3844,7 @@ const prices = {
           "matte": "25"
       },
       {
-          "format": "А5",
+          "format": "A5",
           "density": "230",
           "quantity": "51",
           "glossy": "23",
