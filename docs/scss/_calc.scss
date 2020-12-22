@@ -15,6 +15,13 @@
     &.is-active {
       display: block;
     }
+
+    .button {
+      &.active {
+        background-color: $bg-blue;
+        border: 1px solid $bg-blue;
+      }
+    }
   }
 
   &-content {
@@ -26,7 +33,12 @@
   }
 
   &-rows {
+    display: none;
     margin-bottom: 30px;
+
+    &.active {
+      display: block;
+    }
   }
 
   &-row {
