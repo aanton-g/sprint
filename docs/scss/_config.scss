@@ -64,3 +64,7 @@ body {
 	max-width: calc(100% - 320px);
 	flex-grow: 1;
 }
+
+.disabled {
+	pointer-events: none;
+}

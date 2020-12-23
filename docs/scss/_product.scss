@@ -9,13 +9,36 @@
     flex-direction: column;
 
     h1 {
-      font-size: 28px;
-      margin: 0 0 20px;
+      font-size: 36px;
+      margin: 0 0 30px;
     }
 
     &-list {
       margin: 0;
       font-size: 18px;
+      list-style: none;
+      padding: 0;
+
+      li {
+        padding-left: 30px;
+        position: relative;
+
+        &:before {
+          content: '';
+          width: 8px;
+          height: 8px;
+          position: absolute;
+          top: 50%;
+          left: 5px;
+          transform: translate(0, -50%);
+          border-radius: 50%;
+          background-color: #5CA7F2;
+        }
+
+        &:not(:last-child) {
+          margin-bottom: 10px;
+        }
+      }
     }
 
     &-footer {
@@ -36,9 +59,7 @@
 
   &-slider {
     width: 500px;
-    height: 300px;
-    border: 2px solid black;
-    border-radius: 9px;
+    height: 500px;
     padding: 2px;
     margin-right: 20px;
   }

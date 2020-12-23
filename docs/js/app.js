@@ -353,8 +353,6 @@ document.addEventListener('DOMContentLoaded', function() {
             quantityIndex = 1;
           }
         }
-        console.log(quantityIndex);
-        console.log(prices.foto.filter(x => x.format === format));
 
         const currentFormat = foto_config.formats.find(x => x.name === format);
         const total = prices.foto.filter(x => x.format === format)[quantityIndex][texture] * quantity;

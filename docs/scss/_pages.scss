@@ -75,7 +75,7 @@
     }
 
     &-category {
-      min-height: 245px;
+      min-height: 315px;
       width: calc(100% / 7 - 41px);
 
       @media (max-width: 2140px) {
@@ -102,10 +102,22 @@
         width: 100%;
       }
 
+      .pages-item-image {
+        margin-top: 20px;
+
+        img {
+          max-height: 145px;
+        }
+      }
+
       .pages-item-title {
-        font-size: 24px;
+        font-size: 20px;
         text-align: center;
-        margin: 0;
+        margin: 0 0 10px;
+      }
+
+      .pages-item-desc {
+        text-align: center;
       }
     }
   }

@@ -3,6 +3,11 @@
   border: 1px solid $border;
   border-style: solid solid none solid;
 
+  &-product {
+    padding: 0;
+    border: none;
+  }
+
   &-controls {
     display: flex;
     align-items: flex-start;

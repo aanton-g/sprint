@@ -401,11 +401,11 @@
         <div class="product-slider">
           <div class="swiper-container">
             <div class="swiper-wrapper">
-              <div class="swiper-slide" style="background-image:url(./images/logo.png)"></div>
-              <div class="swiper-slide" style="background-image:url(./images/logo.png)"></div>
-              <div class="swiper-slide" style="background-image:url(./images/logo.png)"></div>
-              <div class="swiper-slide" style="background-image:url(./images/logo.png)"></div>
-              <div class="swiper-slide" style="background-image:url(./images/logo.png)"></div>
+              <div class="swiper-slide" style="background-image:url(./images/images1.png)"></div>
+              <div class="swiper-slide" style="background-image:url(./images/images1.png)"></div>
+              <div class="swiper-slide" style="background-image:url(./images/images1.png)"></div>
+              <div class="swiper-slide" style="background-image:url(./images/images1.png)"></div>
+              <div class="swiper-slide" style="background-image:url(./images/images1.png)"></div>
 						</div>
 						<!-- Add Pagination -->
     				<div class="swiper-pagination"></div>
@@ -413,22 +413,112 @@
 				</div>
 				
 				<div class="product-info">
-					<h1 class="product-title">2 000 визиток «90x50 мм», красочность печати 4+4, картон 300 г/м²</h1>
+					<h1 class="product-title">Визитки</h1>
 
 					<ul class="product-info-list">
-						<li>Дата готовности: 14.12.2020 - 15.12.2020</li>
-						<li>Доставка по г. Севастополь: Бесплатная</li>
+						<li>Срок изготовления 1-2 рабочих дня.</li>
+						<li>Стоимость Дизаина макета оговаривается отдельно. </li>
+						<li>Цена может менятся (уточняйте цену у оператора).</li>
+						<li>Стоимость доставки по счетчику такси.</li>
 					</ul>
 
-					<div class="product-info-footer">
-						<div class="product-total">1900 руб.</div>
-
-						<div class="product-buttons">
-							<button class="button button-blue">В корзину</button>
-							<button class="button button-cta">Купить в один клик</button>
+					<section class="calc calc-product">
+						<div class="calc-content is-active">
+							<div class="calc-rows calc-rows-digital active">
+								<div class="calc-row">
+									<h5 class="calc-row-title">Бумага</h5>
+				
+									<div class="calc-row-fields">
+										<div class="calc-row-field disabled">
+											<label for="type">Тип</label>
+											<select name="type" id="type" data-has-value=true>
+												<option value="cal">Картон</option>
+											</select>
+										</div>
+				
+										<div class="calc-row-field disabled">
+											<label for="density">Плотность</label>
+											<select name="density" class="density" id="density" data-has-value=true>
+												<option value="300">300</option>
+											</select>
+										</div>
+									</div>
+								</div>
+				
+								<div class="calc-row">
+									<h5 class="calc-row-title">Изделие</h5>
+				
+									<div class="calc-row-field disabled">
+										<label for="format">Формат</label>
+										<select name="format" class="format" id="format" data-has-value=true>
+											<option value="Визитка">Визитка</option>
+										</select>
+									</div>
+				
+									<div class="calc-row-fields">
+										<div class="calc-row-field-group">
+											<div class="calc-row-field">
+												<label for="width">Ширина</label>
+												<input type="text" name="width" id="width" placeholder="0">
+											</div>
+				
+											<div class="calc-row-field">
+												<label for="height">Высота</label>
+												<input type="text" name="height" id="height" placeholder="0">
+											</div>
+										</div>
+									</div>
+								</div>
+				
+								<div class="calc-row">
+									<h5 class="calc-row-title">Красочность</h5>
+				
+									<div class="calc-row-fields">
+										<div class="calc-row-field">
+											<label for="front">Лицо</label>
+											<select name="front" class="color" id="front"></select>
+										</div>
+				
+										<div class="calc-row-field">
+											<label for="back">Оборот</label>
+											<select name="back" class="color" id="back"></select>
+										</div>
+									</div>
+								</div>
+				
+								<div class="calc-row">
+									<h5 class="calc-row-title">Ламинация</h5>
+				
+									<div class="calc-row-fields">
+										<div class="calc-row-field">
+											<label for="lamination"></label>
+											<select name="lamination" id="lamination"></select>
+										</div>
+									</div>
+								</div>
+				
+								<div class="calc-row">
+									<h5 class="calc-row-title">Тираж</h5>
+				
+									<div class="calc-row-field">
+										<label for="quantity"></label>
+										<input type="number" id="quantity-input">
+										<div class="calc-row-field-error"></div>
+									</div>
+								</div>
+							</div>
 						</div>
-					</div>
-					
+				
+						<div class="calc-preview"></div>
+			
+						<div class="calc-footer">
+							<div class="calc-footer-info">
+								<span>Цена за единицу: <span id="calc-footer-total"></span> ₽</span>
+								<h3>Цена: <span id="total">0</span> руб.</h3>
+							</div>
+							<button class="button button-cta">Оформить заказ</button>
+						</div>
+					</section>
 				</div>
       </div>
     </section>

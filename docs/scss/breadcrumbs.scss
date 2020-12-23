@@ -10,15 +10,16 @@
 
     li {
       margin: 0 3px;
+      color: #757677;
+      font-size: 18px;
     }
 
     a {
       text-decoration: none;
-      color: $textcolor;
-      font-weight: 600;
+      color: #757677;
 
       &:hover, &:focus {
-        color: $textcolor;
+        color: #757677;
       }
     }
   }

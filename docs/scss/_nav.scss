@@ -84,6 +84,7 @@
         margin-bottom: 6px;
       }
 
+      a,
       span {
         display: inline-flex;
         align-items: center;
@@ -91,6 +92,15 @@
         background-color: $bg-grey-dark;
         border: 2px solid $bg-grey-dark;
         border-radius: 9px;
+      }
+
+      a {
+        text-decoration: none;
+        color: white;
+
+        &:hover, &:focus {
+          color: white;
+        }
       }
     }
 

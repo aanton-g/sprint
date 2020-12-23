@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html lang="ru">
-
 <head>
 
 	<meta charset="utf-8">
@@ -12,7 +9,7 @@
 </head>
 
 <body>
-	<header class="header">
+  <header class="header">
 		<ul class="header-links">
 			<li>
 				<img src="images/icons/marker.svg" alt="marker">
@@ -374,285 +371,105 @@
 		</div>
 	</header>
 
-	<main class="main">
-		<section class="calc">
-			<div class="calc-controls">
-				<button class="button button-main">Калькулятор</button>
+  <section class="calc">
+    <div class="calc-content is-active">
+      <div class="calc-rows calc-rows-digital active">
+        <div class="calc-row">
+          <h5 class="calc-row-title">Бумага</h5>
 
-				<div class="calc-variants is-active">
-					<button id="digital" class="button active">Цифровой</button>
-					<button id="foto" class="button">Фото</button>
-				</div>
-			</div>
+          <div class="calc-row-fields">
+            <div class="calc-row-field">
+              <label for="type">Тип</label>
+              <select name="type" id="type" data-has-value=true>
+                <option value="cal">Картон</option>
+              </select>
+            </div>
 
-			<div class="calc-content is-active">
-				<div class="calc-rows calc-rows-digital active">
-					<div class="calc-row">
-						<h5 class="calc-row-title">Бумага</h5>
+            <div class="calc-row-field">
+              <label for="density">Плотность</label>
+              <select name="density" class="density" id="density" data-has-value=true>
+                <option value="300">300</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-						<div class="calc-row-fields">
-							<div class="calc-row-field">
-								<label for="type">Тип</label>
-								<select name="type" id="type"></select>
-							</div>
+        <div class="calc-row">
+          <h5 class="calc-row-title">Изделие</h5>
 
-							<div class="calc-row-field">
-								<label for="factura">Фактура</label>
-								<select name="factura" id="factura"></select>
-							</div>
+          <div class="calc-row-field">
+            <label for="format">Формат</label>
+            <select name="format" class="format" id="format" data-has-value=true>
+              <option value="Визитка">Визитка</option>
+            </select>
+          </div>
 
-							<div class="calc-row-field">
-								<label for="density">Плотность</label>
-								<select name="density" class="density" id="density"></select>
-							</div>
-						</div>
-					</div>
+          <div class="calc-row-fields">
+            <div class="calc-row-field-group">
+              <div class="calc-row-field">
+                <label for="width">Ширина</label>
+                <input type="text" name="width" id="width" placeholder="0">
+              </div>
 
-					<div class="calc-row">
-						<h5 class="calc-row-title">Изделие</h5>
+              <div class="calc-row-field">
+                <label for="height">Высота</label>
+                <input type="text" name="height" id="height" placeholder="0">
+              </div>
+            </div>
+          </div>
+        </div>
 
-						<div class="calc-row-fields">
-							<div class="calc-row-field">
-								<label for="format">Формат</label>
-								<select name="format" class="format" id="format"></select>
-							</div>
+        <div class="calc-row">
+          <h5 class="calc-row-title">Красочность</h5>
 
-							<div class="calc-row-field-group">
-								<div class="calc-row-field">
-									<label for="width">Ширина</label>
-									<input type="text" name="width" id="width" placeholder="0">
-								</div>
-	
-								<div class="calc-row-field">
-									<label for="height">Высота</label>
-									<input type="text" name="height" id="height" placeholder="0">
-								</div>
-							</div>
+          <div class="calc-row-fields">
+            <div class="calc-row-field">
+              <label for="front">Лицо</label>
+              <select name="front" class="color" id="front"></select>
+            </div>
 
-							<div class="calc-row-field">
-								<label for="quantity">Тираж</label>
-								<input type="number" id="quantity-input">
-								<div class="calc-row-field-error"></div>
-							</div>
-						</div>
-					</div>
+            <div class="calc-row-field">
+              <label for="back">Оборот</label>
+              <select name="back" class="color" id="back"></select>
+            </div>
+          </div>
+        </div>
 
-					<div class="calc-row">
-						<h5 class="calc-row-title">Красочность</h5>
+        <div class="calc-row">
+          <h5 class="calc-row-title">Ламинация</h5>
 
-						<div class="calc-row-fields">
-							<div class="calc-row-field">
-								<label for="front">Лицо</label>
-								<select name="front" class="color" id="front"></select>
-							</div>
+          <div class="calc-row-fields">
+            <div class="calc-row-field">
+              <label for="lamination"></label>
+              <select name="lamination" id="lamination"></select>
+            </div>
+          </div>
+        </div>
 
-							<div class="calc-row-field">
-								<label for="back">Оборот</label>
-								<select name="back" class="color" id="back"></select>
-							</div>
-						</div>
-					</div>
+        <div class="calc-row">
+          <h5 class="calc-row-title">Тираж</h5>
 
-					<div class="calc-row">
-						<h5 class="calc-row-title">Ламинация</h5>
+            <div class="calc-row-field">
+              <label for="quantity"></label>
+              <input type="number" id="quantity-input">
+              <div class="calc-row-field-error"></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-						<div class="calc-row-fields">
-							<div class="calc-row-field">
-								<label for="lamination"></label>
-								<select name="lamination" id="lamination"></select>
-							</div>
-						</div>
-					</div>
-				</div>
+      <div class="calc-preview"></div>
 
-				<div class="calc-rows calc-rows-foto">
-					<div class="calc-row">
-						<h5 class="calc-row-title">Изделие</h5>
+      <div class="calc-footer">
+        <div class="calc-footer-info">
+          <span>Цена за единицу: <span id="calc-footer-total"></span> ₽</span>
+          <h3>Цена: <span id="total">0</span> руб.</h3>
+        </div>
+        <button class="button button-cta">Оформить заказ</button>
+      </div>
+    </div>
+  </section>
 
-						<div class="calc-row-fields">
-							<div class="calc-row-field">
-								<label for="foto-format">Формат</label>
-								<select name="foto-format" class="foto-format" id="foto-format"></select>
-							</div>
-
-							<div class="calc-row-field-group">
-								<div class="calc-row-field">
-									<label for="foto-width">Ширина</label>
-									<input type="text" name="foto-width" id="foto-width" placeholder="0">
-								</div>
-	
-								<div class="calc-row-field">
-									<label for="foto-height">Высота</label>
-									<input type="text" name="foto-height" id="foto-height" placeholder="0">
-								</div>
-
-								<div class="calc-row-field">
-									<label for="foto-quantity"></label>
-									<input type="number" id="foto-quantity-input">
-									<div class="calc-row-field-error"></div>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="calc-row">
-						<h5 class="calc-row-title">Фактура</h5>
-
-						<div class="calc-row-fields">
-							<div class="calc-row-field">
-								<label for="foto-texture"></label>
-								<select name="foto-texture" id="foto-texture"></select>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="calc-preview"></div>
-
-				<div class="calc-footer">
-					<div class="calc-footer-info">
-						<span>Цена за единицу: <span id="calc-footer-total"></span> ₽</span>
-						<h3>Цена: <span id="total">0</span> руб.</h3>
-					</div>
-					<button class="button button-cta">Оформить заказ</button>
-				</div>
-			</div>
-		</section>
-
-		<section class="pages">
-			<div class="pages-items">
-				<div class="pages-item">
-					<div class="pages-item-image">
-						<img src="images/cat1.svg" alt="">
-					</div>
-
-					<a href="#" class="pages-item-title">Цифровая <br>Печать</a>
-
-					<ul class="pages-item-links">
-						<li>Визитки</li>
-						<li>Календари</li>
-						<li>Евровизитка</li>
-						<li>Плакат</li>
-						<li>Листовка</li>
-						<li>Блокнот</li>
-						<li>Наклейка</li>
-						<li>Открытка</li>
-						<li>Еврооткрытка</li>
-					</ul>
-				</div>
-
-				<div class="pages-item">
-					<div class="pages-item-image">
-						<img src="images/cat2.svg" alt="">
-					</div>
-					
-					<a href="#" class="pages-item-title">Офсетная <br>Печать</a>
-
-					<ul class="pages-item-links">
-						<li>Визитки</li>
-						<li>Календари</li>
-						<li>Евровизитка</li>
-						<li>Плакат</li>
-						<li>Листовка</li>
-						<li>Блокнот</li>
-						<li>Наклейка</li>
-						<li>Открытка</li>
-						<li>Еврооткрытка</li>
-					</ul>
-				</div>
-
-				<div class="pages-item">
-					<div class="pages-item-image">
-						<img src="images/cat3.svg" alt="">
-					</div>
-					
-					<a href="#" class="pages-item-title">Широкоформатная <br>Печать</a>
-
-					<ul class="pages-item-links">
-						<li>Сублимационная</li>
-						<li>Интерьерная</li>
-						<li>Наружняя</li>
-					</ul>
-				</div>
-
-				<div class="pages-item">
-					<div class="pages-item-image">
-						<img src="images/cat4.svg" alt="">
-					</div>
-					
-					<a href="#" class="pages-item-title">Фото печать</a>
-
-					<ul class="pages-item-links">
-						<li><a href="#">Фото на документы</a></li>
-						<li><a href="#">Печать фото 10х15</a></li>
-						<li><a href="#">Печать фото А-4</a></li>
-					</ul>
-				</div>
-
-				<div class="pages-item">
-					<div class="pages-item-image">
-						<img src="images/cat5.svg" alt="">
-					</div>
-					
-					<a href="#" class="pages-item-title">Плоттерная резка</a>
-
-					<ul class="pages-item-links">
-						<li><a href="#">Наклейка</a></li>
-						<li><a href="#">Порезка пленки оракал</a></li>
-						<li><a href="#">Порезка пленки флекс</a></li>
-					</ul>
-				</div>
-
-				<div class="pages-item">
-					<div class="pages-item-image">
-						<img src="images/cat6.svg" alt="">
-					</div>
-					
-					<a href="#" class="pages-item-title">Пост. обработка</a>
-
-					<ul class="pages-item-links">
-						<li><a href="#">Ламинирование</a></li>
-						<li><a href="#">Переплетные работы</a></li>
-						<li><a href="#">Плотерная резка</a></li>
-					</ul>
-				</div>
-
-				<div class="pages-item">
-					<div class="pages-item-image">
-						<img src="images/cat7.svg" alt="">
-					</div>
-					
-					<a href="#" class="pages-item-title">Печать на<br> одежде</a>
-
-					<ul class="pages-item-links">
-						<li><a href="#">Футболки мужские</a></li>
-						<li><a href="#">Футболки женские</a></li>
-						<li><a href="#">Футболки детские</a></li>
-						<li><a href="#">Футболки поло</a></li>
-						<li><a href="#">Маечки</a></li>
-						<li><a href="#">Фартуки</a></li>
-						<li><a href="#">Тостовки</a></li>
-					</ul>
-				</div>
-
-				<div class="pages-item">
-					<div class="pages-item-image">
-						<img src="images/cat8.svg" alt="">
-					</div>
-					
-					<a href="#" class="pages-item-title">Сувенирка</a>
-
-					<ul class="pages-item-links">
-						<li><a href="#">Сублимационная</a></li>
-						<li><a href="#">Интерьерная</a></li>
-						<li><a href="#">Наружняя</a></li>
-					</ul>
-				</div>
-			</div>
-		</section>
-	</main>
-
-	<script src="js/app.min.js"></script>
-
+  <script src="js/app.min.js"></script>
 </body>
 </html>
