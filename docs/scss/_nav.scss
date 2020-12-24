@@ -22,7 +22,7 @@
     &.is-active {
       color: white;
 
-      .nav-item-inner {
+      span.nav-item-inner  {
         background-color: $bg-blue;
 
         svg {
@@ -44,6 +44,11 @@
       align-items: center;
       padding: 14px 18px;
       border-radius: 9px;
+    }
+
+    a.nav-item-inner {
+      text-decoration: none;
+      color: $textcolor;
     }
 
     &:not(:last-child) {
