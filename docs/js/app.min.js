@@ -297,9 +297,12 @@ document.addEventListener('DOMContentLoaded', function() {
         widthField.value = currentFormat.width;
         heightField.value = currentFormat.height;
         
-        document.querySelector('.calc-preview').innerHTML = `${config.types.find(i => i.name === type).title} - ${currentFormat.name} - ${density}г/кв.м - ${quantity}шт.`;
+        const previewTotal = `${config.types.find(i => i.name === type).title} - ${currentFormat.name} - ${density}г/кв.м - ${quantity}шт.`;
+        document.querySelector('.calc-preview').innerHTML = previewTotal;
+        sessionStorage.setItem('preview', `${previewTotal} - ${(+total + +lamValue).toFixed(2)} руб.`);
+        console.log('update sessionStorage', `${previewTotal} - ${(+total + +lamValue).toFixed(2)} руб.`);
       }
-
+      
       updateOptions(config.types[0].formats[0], true);
     }
 
