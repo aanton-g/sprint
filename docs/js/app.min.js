@@ -539,7 +539,7 @@ const config = {
     },
     { // Каландрированная
       name: 'cal',
-      title: 'Каландрированная',
+      title: 'Картон',
       formats: [
         { // A7
           name: 'A7',
@@ -862,6 +862,54 @@ const config = {
             50,
             100,
             200
+          ],
+        },
+        { // A3
+          name: 'A3',
+          width: 420,
+          height: 297,
+          density: [
+            80
+          ],
+          quantity: [
+            1,
+            10,
+            20,
+            50,
+            100,
+            200
+          ],
+          lam: [
+            {
+              value: 0,
+              title: 'Нет'
+            },
+            {
+              value: 'glossy',
+              title: 'Глянцевая (80мк)'
+            },
+          ],
+        },
+        { // SRA3
+          name: 'SRA3',
+          width: 420,
+          height: 297,
+          density: [
+            80,
+          ],
+          quantity: [
+            1,
+            10,
+            20,
+            50,
+            100,
+            200
+          ],
+          lam: [
+            {
+              value: 0,
+              title: 'Нет'
+            },
           ],
         },
       ],
