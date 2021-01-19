@@ -399,17 +399,16 @@
     <section class="product">
       <div class="product-inner">
         <div class="product-slider">
-          <div class="swiper-container">
-            <div class="swiper-wrapper">
-              <div class="swiper-slide" style="background-image:url(./images/images1.png)"></div>
-              <div class="swiper-slide" style="background-image:url(./images/images1.png)"></div>
-              <div class="swiper-slide" style="background-image:url(./images/images1.png)"></div>
-              <div class="swiper-slide" style="background-image:url(./images/images1.png)"></div>
-              <div class="swiper-slide" style="background-image:url(./images/images1.png)"></div>
+          <div class="swiper-container gallery-top">
+						<div class="swiper-wrapper">
+							<div class="swiper-slide" style="background-image:url(./images/images1.png)"></div>
 						</div>
-						<!-- Add Pagination -->
-    				<div class="swiper-pagination"></div>
-          </div>
+					</div>
+					<div class="swiper-container gallery-thumbs">
+						<div class="swiper-wrapper">
+							<div class="swiper-slide" style="background-image:url(./images/images1.png)"></div>
+						</div>
+					</div>
 				</div>
 				
 				<div class="product-info">
@@ -445,7 +444,7 @@
 									</div>
 								</div>
 				
-								<div class="calc-row">
+								<div class="calc-row d-none">
 									<h5 class="calc-row-title">Изделие</h5>
 				
 									<div class="calc-row-field disabled">
@@ -512,7 +511,7 @@
 						<div class="calc-preview"></div>
 			
 						<div class="calc-footer">
-							<div class="calc-footer-info">
+							<div class="calc-footer-info d-none">
 								<span>Цена за единицу: <span id="calc-footer-total"></span> ₽</span>
 								<h3>Цена: <span id="total">0</span> руб.</h3>
 							</div>
@@ -532,13 +531,19 @@
 
   <!-- Initialize Swiper -->
   <script>
-    var swiper = new Swiper('.swiper-container', {
-      pagination: {
-        el: '.swiper-pagination',
-        type: 'fraction',
-      },
+    var galleryThumbs = new Swiper('.gallery-thumbs', {
+      spaceBetween: 5,
+      slidesPerView: 5,
+      freeMode: true,
+      watchSlidesVisibility: true,
+      watchSlidesProgress: true,
+    });
+    var galleryTop = new Swiper('.gallery-top', {
+      spaceBetween: 10,
+      thumbs: {
+        swiper: galleryThumbs
+      }
     });
   </script>
-
 </body>
 </html>

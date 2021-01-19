@@ -69,6 +69,39 @@ body {
 	pointer-events: none;
 }
 
-.d-none {
-	display: none!important;
+.d {
+	&-none {
+		display: none!important;
+	}
+
+	&-inline-flex {
+		display: inline-flex;
+	}
+
+	&-flex {
+		display: flex;
+	}
+}
+	
+
+.text-align {
+	&-left {
+		text-align: left;
+	}
+
+	&-center {
+		text-align: center;
+	}
+
+	&-right {
+		text-align: right;
+	}
+}
+
+.ml-auto {
+	margin-left: auto;
+}
+
+.mr-auro {
+	margin-right: auto;
 }
