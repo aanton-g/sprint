@@ -7,11 +7,12 @@
 	<title>Sprint</title>
 	<meta name="description" content="Sprint">
 	<meta name="viewport" content="width=device-width">
+	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
 	<link rel="stylesheet" href="css/app.min.css">
 
 </head>
 
-<body>
+<body onunload="">
 	<header class="header">
 		<ul class="header-links">
 			<li>
@@ -242,11 +243,6 @@
 								<label for="factura">Фактура</label>
 								<select name="factura" id="factura"></select>
 							</div>
-
-							<div class="calc-row-field">
-								<label for="density">Плотность</label>
-								<select name="density" class="density" id="density"></select>
-							</div>
 						</div>
 					</div>
 
@@ -257,6 +253,11 @@
 							<div class="calc-row-field">
 								<label for="format">Формат</label>
 								<select name="format" class="format" id="format"></select>
+							</div>
+							
+							<div class="calc-row-field">
+								<label for="density">Плотность</label>
+								<select name="density" class="density" id="density"></select>
 							</div>
 
 							<div class="calc-row-field-group">
@@ -285,12 +286,16 @@
 						<div class="calc-row-fields">
 							<div class="calc-row-field">
 								<label for="front">Лицо</label>
-								<select name="front" class="color" id="front"></select>
+								<select name="front" class="color" id="front">
+									<option value="0">Нет</option>
+								</select>
 							</div>
 
 							<div class="calc-row-field">
 								<label for="back">Оборот</label>
-								<select name="back" class="color" id="back"></select>
+								<select name="back" class="color" id="back">
+									<option value="0">Нет</option>
+								</select>
 							</div>
 						</div>
 					</div>
@@ -356,141 +361,127 @@
 						<span>Цена за единицу: <span id="calc-footer-total"></span> ₽</span>
 						<h3>Цена: <span id="total">0</span> руб.</h3>
 					</div>
-					<button class="button button-cta">Оформить заказ</button>
+					<a href="#" class="button button-cta">Оформить заказ</a>
 				</div>
 			</div>
 		</section>
 
 		<section class="pages">
 			<div class="pages-items">
-				<div class="pages-item">
+					<a href="http://sprint/index.php?route=product/category&amp;path=60" class="pages-item">
 					<div class="pages-item-image">
-						<img src="images/cat1.svg" alt="">
+						<img src="images/cat1.svg" alt="Цифровая печать">
 					</div>
-
-					<a href="#" class="pages-item-title">Цифровая <br>Печать</a>
-
-					<ul class="pages-item-links">
-						<li>Визитки</li>
-						<li>Календари</li>
-						<li>Евровизитка</li>
-						<li>Плакат</li>
-						<li>Листовка</li>
-						<li>Блокнот</li>
-						<li>Наклейка</li>
-						<li>Открытка</li>
-						<li>Еврооткрытка</li>
-					</ul>
-				</div>
-
-				<div class="pages-item">
-					<div class="pages-item-image">
-						<img src="images/cat2.svg" alt="">
-					</div>
+		
+					<div class="pages-item-title">Цифровая печать</div>
 					
-					<a href="#" class="pages-item-title">Офсетная <br>Печать</a>
-
-					<ul class="pages-item-links">
-						<li>Визитки</li>
-						<li>Календари</li>
-						<li>Евровизитка</li>
-						<li>Плакат</li>
-						<li>Листовка</li>
-						<li>Блокнот</li>
-						<li>Наклейка</li>
-						<li>Открытка</li>
-						<li>Еврооткрытка</li>
-					</ul>
-				</div>
-
-				<div class="pages-item">
-					<div class="pages-item-image">
-						<img src="images/cat3.svg" alt="">
+					<div class="pages-item-links">
+						Визитки
+		Календари
+		Евровизитка
+		Плакат
+		Листовка
+		Блокнот
+		Наклейка
+		Открытка
+		Еврооткрытка
 					</div>
-					
-					<a href="#" class="pages-item-title">Широкоформатная <br>Печать</a>
-
-					<ul class="pages-item-links">
-						<li>Сублимационная</li>
-						<li>Интерьерная</li>
-						<li>Наружняя</li>
-					</ul>
-				</div>
-
-				<div class="pages-item">
+				</a>
+						<a href="http://sprint/index.php?route=product/category&amp;path=61" class="pages-item">
 					<div class="pages-item-image">
-						<img src="images/cat4.svg" alt="">
+						<img src="images/cat2.svg" alt="Офсетная печать">
 					</div>
+		
+					<div class="pages-item-title">Офсетная печать</div>
 					
-					<a href="#" class="pages-item-title">Фото печать</a>
-
-					<ul class="pages-item-links">
-						<li>Фото на документы</li>
-						<li>Печать фото 10х15</li>
-						<li>Печать фото А-4</li>
-					</ul>
-				</div>
-
-				<div class="pages-item">
+					<div class="pages-item-links">
+						Визитки
+								Календари
+								Евровизитка
+								Плакат
+								Листовка
+								Блокнот
+								Наклейка
+								Открытка
+								Еврооткрытка      </div>
+				</a>
+						<a href="http://sprint/index.php?route=product/category&amp;path=62" class="pages-item">
 					<div class="pages-item-image">
-						<img src="images/cat5.svg" alt="">
+						<img src="images/cat3.svg" alt="Широкоформатная печать">
 					</div>
+		
+					<div class="pages-item-title">Широкоформатная печать</div>
 					
-					<a href="#" class="pages-item-title">Плоттерная резка</a>
-
-					<ul class="pages-item-links">
-						<li>Наклейка</li>
-						<li>Порезка пленки оракал</li>
-						<li>Порезка пленки флекс</li>
-					</ul>
-				</div>
-
-				<div class="pages-item">
+					<div class="pages-item-links">
+						Сублимационная
+								Интерьерная
+								Наружняя      </div>
+				</a>
+						<a href="http://sprint/index.php?route=product/category&amp;path=67" class="pages-item">
 					<div class="pages-item-image">
-						<img src="images/cat6.svg" alt="">
+						<img src="images/cat4.svg" alt="Фотопечать">
 					</div>
+		
+					<div class="pages-item-title">Фотопечать</div>
 					
-					<a href="#" class="pages-item-title">Пост. обработка</a>
-
-					<ul class="pages-item-links">
-						<li>Ламинирование</li>
-						<li>Переплетные работы</li>
-						<li>Плотерная резка</li>
-					</ul>
-				</div>
-
-				<div class="pages-item">
+					<div class="pages-item-links">
+						Фото на документы
+								Печать фото 10х15
+								Печать фото А-4      </div>
+				</a>
+						<a href="http://sprint/index.php?route=product/category&amp;path=68" class="pages-item">
 					<div class="pages-item-image">
-						<img src="images/cat7.svg" alt="">
+						<img src="images/cat5.svg" alt="Плоттерная резка">
 					</div>
+		
+					<div class="pages-item-title">Плоттерная резка</div>
 					
-					<a href="#" class="pages-item-title">Печать на<br> одежде</a>
-
-					<ul class="pages-item-links">
-						<li>Футболки мужские</li>
-						<li>Футболки женские</li>
-						<li>Футболки детские</li>
-						<li>Футболки поло</li>
-						<li>Маечки</li>
-						<li>Фартуки</li>
-						<li>Тостовки</li>
-					</ul>
-				</div>
-
-				<div class="pages-item">
+					<div class="pages-item-links">
+						Наклейка
+								Порезка пленки оракал
+								Порезка пленки флекс      </div>
+				</a>
+						<a href="http://sprint/index.php?route=product/category&amp;path=69" class="pages-item">
 					<div class="pages-item-image">
-						<img src="images/cat8.svg" alt="">
+						<img src="images/cat6.svg" alt="Пост. обработка">
 					</div>
+		
+					<div class="pages-item-title">Пост. обработка</div>
 					
-					<a href="#" class="pages-item-title">Сувенирка</a>
-
-					<ul class="pages-item-links">
-						<li>Сублимационная</li>
-						<li>Интерьерная</li>
-						<li>Наружняя</li>
-					</ul>
-				</div>
-			</div>
+					<div class="pages-item-links">
+						Ламинирование
+								Переплетные работы
+								Плотерная резка      </div>
+				</a>
+						<a href="http://sprint/index.php?route=product/category&amp;path=70" class="pages-item">
+					<div class="pages-item-image">
+						<img src="images/cat7.svg" alt="Печать на одежде">
+					</div>
+		
+					<div class="pages-item-title">Печать на одежде</div>
+					
+					<div class="pages-item-links">
+						Футболки мужские
+								Футболки женские
+								Футболки детские
+								Футболки поло
+								Маечки
+								Фартуки
+								Тостовки      </div>
+				</a>
+						<a href="http://sprint/index.php?route=product/category&amp;path=71" class="pages-item">
+					<div class="pages-item-image">
+						<img src="images/cat8.svg" alt="Сувенирка">
+					</div>
+		
+					<div class="pages-item-title">Сувенирка</div>
+					
+					<div class="pages-item-links">
+						Сублимационная
+								Интерьерная
+								Наружняя      </div>
+				</a>
+					</div>
 		</section>
 	</main>
 

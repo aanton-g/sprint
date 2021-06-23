@@ -1,5 +1,14 @@
-document.addEventListener('DOMContentLoaded', function() {
- 
+if( document.readyState !== 'loading' ) {
+  console.log( 'document is already ready, just execute code here' );
+  init();
+} else {
+  document.addEventListener('DOMContentLoaded', function () {
+    console.log( 'document was not ready, place code here' );
+    init();
+  });
+}
+
+function init() {
   const navList = document.querySelector('.nav-list');
 
   navList.addEventListener('click', function(e) {
@@ -41,13 +50,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if(document.querySelector('.calc-controls')) {
       calcButton.addEventListener('click', function() {
+        fotoCalc();
         this.classList.toggle('is-active');
         calcContent.classList.toggle('is-active');
         calcVariants.classList.toggle('is-active');
       });
 
       digitalButton.addEventListener('click', function() {
-        if(this.classList.contains('active')) return;
+        if(this.classList.contains('active')) {
+          this.classList.add('refresh')
+          this.addEventListener('animationend', function() {
+            this.classList.remove('refresh')
+          })
+        };
         calcVariants.querySelectorAll('.button').forEach(function(button) {
           button.classList.remove('active');
         });
@@ -62,7 +77,12 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   
       fotoButton.addEventListener('click', function() {
-        if(this.classList.contains('active')) return;
+        if(this.classList.contains('active')) {
+          this.classList.add('refresh')
+          this.addEventListener('animationend', function() {
+            this.classList.remove('refresh')
+          })
+        };
         calcVariants.querySelectorAll('.button').forEach(function(button) {
           button.classList.remove('active');
         });
@@ -81,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function selectInit(item, value, select) {
       if(!select || select.dataset.hasValue) return;
+      select.classList.remove('changed');
 
       let opt = document.createElement('option');
       opt.value = value;
@@ -119,37 +140,22 @@ document.addEventListener('DOMContentLoaded', function() {
         removeOptions(select);
 
         select.addEventListener('change', function() {
+          if(this.value === "Не выбрано" || this.value === 0 || this.value === "0") {
+            this.classList.remove('changed')
+          } else {
+            this.classList.add('changed')
+          }
+
           if(select.id === 'type') {
             const currentType = config.types.find(type => type.name === this.value);
-            const currentFormat = formatSelect.value;
+            // format update
             removeOptions(formatSelect);
             currentType.formats.forEach(option => selectInit(option.name, option.name, formatSelect));
-            const index = currentType.formats.findIndex(x => x.name === currentFormat);
-            if(index !== -1) {
-              formatSelect.selectedIndex = index;
-              updateOptions(currentType.formats[index]);
-            } else {
-              updateOptions(currentType.formats[0]);
-            }
-
-            // color update
-            if(currentType['front'] !== undefined && currentType['back'] !== undefined) {
-              removeOptions(colorFrontSelect);
-              currentType.front.forEach(option => selectInit(option.name, option.value, colorFrontSelect));
-              removeOptions(colorBackSelect);
-              currentType.back.forEach(option => selectInit(option.name, option.value, colorBackSelect));
-            }
-
-            // factura update
-            removeOptions(facturaSelect);
-            if(currentType['factura'] !== undefined) {
-              currentType.factura.forEach(option => selectInit(option.name, option.name, facturaSelect));
-            } else {
-              selectInit('Нет', 0, facturaSelect);
-            }
+            updateOptions(currentType.formats[0], currentType);
           } else if(select.id === 'format') {
+            const currentType = config.types.find(type => type.name === typeSelect.value);
             const currentFormat = config.types.find(type => type.name === typeSelect.value).formats.find(format => format.name === this.value);
-            updateOptions(currentFormat);
+            updateOptions(currentFormat, currentType);
           }
           
           collectValue();
@@ -158,72 +164,94 @@ document.addEventListener('DOMContentLoaded', function() {
 
       config.types.forEach(function(item) {
         selectInit(item.title, item.name, typeSelect);
+        typeSelect.classList.add('changed');
       });
 
       config.types[0].formats.forEach(function(item) {
         selectInit(item.name, item.name, formatSelect);
       });
 
-      const currentFormat = config.types.find(type => type.name === typeSelect.value).formats.find(format => format.name === formatSelect.value);
-      const min = currentFormat.quantity !== undefined ? currentFormat.quantity[0] : config.quantity[0];
-      const max = currentFormat.quantity !== undefined ? currentFormat.quantity[currentFormat.quantity.length - 1] : config.quantity[config.quantity.length - 1];
-
-      quantityInput.value = min;
-      quantityInput.addEventListener('input', function() {
-        const quantityRow = quantityInput.closest('.calc-row-field');
-        const errorText = quantityRow.querySelector('.calc-row-field-error');
-
-        if(this.value && this.value > 0) {
-          if(this.value > max) {
-            updateQuantity(currentFormat);
-          }
-
-          if(this.value < min) {
-            quantityRow.classList.add('has-error');
-            errorText.innerHTML = `Минимальный тираж ${min}шт.`
-          } else {
-            quantityRow.classList.remove('has-error');
-            collectValue();
-          }
-        }
-      });
-
-      function updateOptions(format, isInit) {
+      function updateOptions(format, type) {
+        sessionStorage.setItem('preview', '');
+        sessionStorage.setItem('info', '');
+        // size update
+        updateSize(format);
         // density update
         updateDensity(format);
         // quantity update
         updateQuantity(format);
         // lam update
         laminationUpdate(format);
-      
-        if(isInit) {
+        // factura update
+        updateFactura(type);
+        // color update
+        updateColor(type);
+
+        totalField.innerHTML = 0;
+        totalOne.innerHTML = 0;
+        quantityInput.removeEventListener('input', quantityError);
+        quantityInput.addEventListener('input', quantityError);
+      }
+
+      function updateSize(format) {
+        widthField.value = format.width;
+        heightField.value = format.height;
+
+        if (format.name === "Не выбрано") {
+          widthField.classList.remove('changed');
+          heightField.classList.remove('changed');
+        } else {
+          widthField.classList.add('changed');
+          heightField.classList.add('changed');
+        }
+      }
+
+      function updateColor(type) {
+        removeOptions(colorFrontSelect);
+        removeOptions(colorBackSelect);
+        if(type['front'] !== undefined && type['back'] !== undefined) {
+          type.front.forEach(option => selectInit(option.name, option.value, colorFrontSelect));
+          type.back.forEach(option => selectInit(option.name, option.value, colorBackSelect));
+        } else {
           config.front.forEach((option) => selectInit(option.name, option.value, colorFrontSelect));
           config.back.forEach((option) => selectInit(option.name, option.value, colorBackSelect));
+        }
+      }
+
+      function updateFactura(type) {
+        removeOptions(facturaSelect);
+        if(type['factura'] !== undefined) {
+          type.factura.forEach(option => selectInit(option.name, option.name, facturaSelect));
+        } else {
           selectInit('Нет', 0, facturaSelect);
-          collectValue();
         }
       }
       
       function updateDensity(format) {
-        const currentDensity = densitySelect.value;
         removeOptions(densitySelect);
         format.density.forEach(option => selectInit(option, option, densitySelect));
-        if(format.density.indexOf(+currentDensity) !== -1) {
-          densitySelect.selectedIndex = format.density.indexOf(+currentDensity);
-        }
+        densitySelect.selectedIndex = 0;
       }
       
       function updateQuantity(format) {
         const quantityMin = format.quantity !== undefined ? format.quantity[0] : config.quantity[0];
         const quantityMax = format.quantity !== undefined ? format.quantity[format.quantity.length - 1] : config.quantity[config.quantity.length - 1];
+        const quantityStep = format.step || 1;
       
         quantityInput.min = quantityMin;
         quantityInput.max = quantityMax;
+        quantityInput.step = quantityStep;
         
         if(!quantityInput.value || quantityInput.value < quantityMin) {
           quantityInput.value = quantityMin;
         } else if(quantityInput.value > quantityMax) {
           quantityInput.value = quantityMax;
+        }
+
+        if (format.name === "Не выбрано") {
+          quantityInput.classList.remove('changed');
+        } else {
+          quantityInput.classList.add('changed');
         }
       }
       
@@ -232,16 +260,18 @@ document.addEventListener('DOMContentLoaded', function() {
         removeOptions(laminationSelect);
         if(format['lam'] !== undefined) {
           format.lam.forEach(option => selectInit(option.title, option.value, laminationSelect));
-          const index = format.lam.findIndex(x => x.value === currentLamination);
+          laminationSelect.selectedIndex = 0;
+          /* const index = format.lam.findIndex(x => x.value === currentLamination);
           if(index !== -1) {
             laminationSelect.selectedIndex = index;
-          }
+          } */
         } else {
           config.lam.forEach(option => selectInit(option.title, option.value, laminationSelect));
-          const index = config.lam.findIndex(x => x.value === currentLamination);
+          laminationSelect.selectedIndex = 0;
+          /* const index = config.lam.findIndex(x => x.value === currentLamination);
           if(index !== -1) {
             laminationSelect.selectedIndex = index;
-          }
+          } */
         }
       }
       
@@ -252,13 +282,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const quantity = quantityInput.value;
         const lamination = laminationSelect.value;
         const color = +colorFrontSelect.value + +colorBackSelect.value;
-      
+
         const currentFormat = config.types.find(i => i.name === type).formats.find(x => x.name === format);
-      
+
+        if(density === "Не выбрано" || color === 0) return
+
         let total = 0;
         let lamValue, lamOne;
         const totalList = prices[type].filter(i => i.format === format && i.density === density).find(x => x.quantity === quantity);
         const laminationList = lamination !== '0' ? prices.lam.filter(i => i.format === format) : [];
+
         if(totalList !== undefined) {
           total = totalList[color];
           lamValue = laminationList && laminationList.length > 0 ? laminationList.find(i => i.quantity === quantity)[lamination] : 0;
@@ -274,15 +307,9 @@ document.addEventListener('DOMContentLoaded', function() {
       
           const totalListMin = /^-{0,1}\d+$/.test(quantityMin) && prices[type].find(i => i.format === format && i.density === density && +i.quantity === quantityMin);
           const totalListMax = /^-{0,1}\d+$/.test(quantityMax) && prices[type].find(i => i.format === format && i.density === density && +i.quantity === quantityMax);
-          
-          if(color === 5) {
-            totalMin = totalListMin ? +totalListMin[colorFrontSelect.value] + +totalListMin[colorBackSelect.value] : 0;
-            totalMax = totalListMax ? +totalListMax[colorFrontSelect.value] + +totalListMax[colorBackSelect.value] : 0;
-          } else {
-            totalMin = totalListMin ? totalListMin[color] : 0;
-            totalMax = totalListMax ? totalListMax[color] : 0;
-          }
-      
+          totalMin = totalListMin ? totalListMin[color] : 0;
+          totalMax = totalListMax ? totalListMax[color] : 0;
+
           if(lamination !== '0') {
             const lamValueMin = laminationList.find(i => +i.quantity === quantityMin)[lamination];
             const lamValueMax = laminationList.find(i => +i.quantity === quantityMax)[lamination];
@@ -297,15 +324,36 @@ document.addEventListener('DOMContentLoaded', function() {
       
         totalField.innerHTML = (+total + +lamValue).toFixed(2);
         totalOne.innerHTML = ((+total + +lamValue) / quantity).toFixed(2);
-        widthField.value = currentFormat.width;
-        heightField.value = currentFormat.height;
         
         const previewTotal = `${config.types.find(i => i.name === type).title} - ${currentFormat.name} - ${density}г/кв.м - ${quantity}шт.`;
         document.querySelector('.calc-preview').innerHTML = previewTotal;
         sessionStorage.setItem('preview', `${previewTotal} - ${(+total + +lamValue).toFixed(2)} руб.`);
+        sessionStorage.setItem('info', `${previewTotal} - ${colorFrontSelect.value === 0 ? '' : `лицо: ${+colorFrontSelect.value} - `}${+colorBackSelect.value === 0 ? '' : `оборот: ${colorBackSelect.value} -`} ${+lamination === 0 ? '' : `ламинация: ${lamination} - `}${(+total + +lamValue).toFixed(2)} руб.`);
+      }
+
+      function quantityError() {
+        const currentFormat = config.types.find(type => type.name === typeSelect.value).formats.find(format => format.name === formatSelect.value);
+        const min = currentFormat.quantity !== undefined ? currentFormat.quantity[0] : config.quantity[0];
+        const max = currentFormat.quantity !== undefined ? currentFormat.quantity[currentFormat.quantity.length - 1] : config.quantity[config.quantity.length - 1];
+        const quantityRow = quantityInput.closest('.calc-row-field');
+        const errorText = quantityRow.querySelector('.calc-row-field-error');
+
+        if(quantityInput.value && quantityInput.value > 0) {
+          if(quantityInput.value > max) {
+            quantityInput.value = max
+          }
+
+          if(quantityInput.value < min) {
+            quantityRow.classList.add('has-error');
+            errorText.innerHTML = `Минимальный тираж ${min}шт.`
+          } else {
+            quantityRow.classList.remove('has-error');
+            collectValue();
+          }
+        }
       }
       
-      updateOptions(config.types[0].formats[0], true);
+      updateOptions(config.types[0].formats[0], config.types[0]);
     }
 
     // foto calc
@@ -372,11 +420,13 @@ document.addEventListener('DOMContentLoaded', function() {
         fotoWidth.value = currentFormat.width;
         fotoHeight.value = currentFormat.height;
 
-        document.querySelector('.calc-preview').innerHTML = `Фото ${currentFormat.name} - ${quantity}шт.`
+        document.querySelector('.calc-preview').innerHTML = `Фото ${currentFormat.name} - ${quantity}шт.`;
+        sessionStorage.setItem('preview', `Фото ${currentFormat.name} - ${quantity}шт. - ${total} руб.`);
+        sessionStorage.setItem('info', `Фото ${currentFormat.name} - фактура: ${texture} - ${quantity}шт. - ${total} руб.`);
       }
     }
   }
-});
+};
 
 const config = {
   types: [
@@ -385,10 +435,22 @@ const config = {
       title: 'Офсетная',
       formats: [
         {
+          name: 'Не выбрано',
+          width: 0,
+          height: 0,
+          density: [
+            'Нет',
+          ],
+          quantity: [
+            0
+          ],
+        },
+        {
           name: 'A4',
           width: 297,
           height: 210,
           density: [
+            "Не выбрано",
             80,
           ],
           quantity: [
@@ -405,6 +467,7 @@ const config = {
           width: 420,
           height: 297,
           density: [
+            "Не выбрано",
             80,
           ],
           quantity: [
@@ -433,6 +496,10 @@ const config = {
       title: 'Мелованная',
       factura: [
         {
+          name: 'Не выбрано',
+          value: '0'
+        },
+        {
           name: 'Матовая',
           value: 'matt'
         },
@@ -442,13 +509,34 @@ const config = {
         },
       ],
       formats: [
+        {
+          name: 'Не выбрано',
+          width: 0,
+          height: 0,
+          density: [
+            'Нет',
+          ],
+          quantity: [
+            0
+          ],
+        },
         { // A7
           name: 'A7',
           width: 105,
           height: 74,
           density: [
+            "Не выбрано",
             130,
             200,
+            300,
+          ],
+          quantity: [
+            8,
+            10,
+            20,
+            50,
+            100,
+            200
           ],
         },
         { // A6
@@ -456,8 +544,18 @@ const config = {
           width: 148,
           height: 105,
           density: [
+            "Не выбрано",
             130,
             200,
+            300,
+          ],
+          quantity: [
+            4,
+            10,
+            20,
+            50,
+            100,
+            200
           ],
         },
         { // A5
@@ -465,17 +563,29 @@ const config = {
           width: 210,
           height: 148,
           density: [
+            "Не выбрано",
             130,
             200,
-          ]
+            300,
+          ],
+          quantity: [
+            2,
+            10,
+            20,
+            50,
+            100,
+            200
+          ],
         },
         { // A4
           name: 'A4',
           width: 297,
           height: 210,
           density: [
+            "Не выбрано",
             130,
             200,
+            300,
           ],
           quantity: [
             1,
@@ -491,8 +601,10 @@ const config = {
           width: 420,
           height: 297,
           density: [
+            "Не выбрано",
             130,
             200,
+            300,
           ],
           quantity: [
             1,
@@ -513,13 +625,80 @@ const config = {
             },
           ],
         },
+        { // SRA3
+          name: 'SRA3',
+          width: 420,
+          height: 297,
+          density: [
+            "Не выбрано",
+            130,
+            300,
+          ],
+          quantity: [
+            1,
+            10,
+            20,
+            50,
+            100,
+            200
+          ],
+          lam: [
+            {
+              value: 0,
+              title: 'Нет'
+            },
+          ],
+        },
         { // ЕвроФлаер
           name: 'ЕвроФлаер',
           width: 210,
           height: 99,
           density: [
-              130,
-              200,
+            "Не выбрано",
+            130,
+            200,
+            300,
+          ],
+          lam: [
+            {
+              value: 0,
+              title: 'Нет'
+            },
+            {
+              value: 'glossy',
+              title: 'Глянцевая (80мк)'
+            },
+          ],
+        },
+        { // Визитка
+          name: 'Визитка',
+          width: 90,
+          height: 50,
+          density: [
+            "Не выбрано",
+            300,
+          ],
+          quantity: [
+            100,
+            200,
+            300,
+            400,
+            500
+          ]
+        },
+        { // ЕвроВизитка
+          name: 'ЕвроВизитка',
+          width: 90,
+          height: 50,
+          density: [
+            300,
+          ],
+          quantity: [
+            100,
+            200,
+            300,
+            400,
+            500
           ],
           lam: [
             {
@@ -534,15 +713,27 @@ const config = {
         },
       ]
     },
-    { // Каландрированная
+    { // Картон
       name: 'cal',
       title: 'Картон',
       formats: [
+        {
+          name: 'Не выбрано',
+          width: 0,
+          height: 0,
+          density: [
+            'Нет',
+          ],
+          quantity: [
+            0
+          ],
+        },
         { // A7
           name: 'A7',
           width: 105,
           height: 74,
           density: [
+            "Не выбрано",
             90,
             120,
             200,
@@ -555,6 +746,7 @@ const config = {
           width: 148,
           height: 105,
           density: [
+            "Не выбрано",
             90,
             120,
             200,
@@ -567,6 +759,7 @@ const config = {
           width: 210,
           height: 148,
           density: [
+            "Не выбрано",
             90,
             120,
             200,
@@ -579,6 +772,7 @@ const config = {
           width: 297,
           height: 210,
           density: [
+            "Не выбрано",
             90,
             120,
             250,
@@ -598,6 +792,7 @@ const config = {
           width: 420,
           height: 297,
           density: [
+            "Не выбрано",
             220,
             280,
           ],
@@ -625,6 +820,7 @@ const config = {
           width: 420,
           height: 297,
           density: [
+            "Не выбрано",
             120,
             200,
             300,
@@ -649,6 +845,7 @@ const config = {
           width: 210,
           height: 99,
           density: [
+            "Не выбрано",
             120,
             200,
             250,
@@ -670,6 +867,7 @@ const config = {
           width: 90,
           height: 50,
           density: [
+            "Не выбрано",
             300,
           ],
           quantity: [
@@ -685,6 +883,7 @@ const config = {
           width: 90,
           height: 50,
           density: [
+            "Не выбрано",
             300,
           ],
           quantity: [
@@ -711,11 +910,23 @@ const config = {
       name: 'cp',
       title: 'Цветная бумага',
       formats: [
+        {
+          name: 'Не выбрано',
+          width: 0,
+          height: 0,
+          density: [
+            'Нет',
+          ],
+          quantity: [
+            0
+          ],
+        },
         { // A7
           name: 'A7',
           width: 105,
           height: 74,
           density: [
+            "Не выбрано",
             80,
           ],
           quantity: [
@@ -732,6 +943,7 @@ const config = {
           width: 148,
           height: 105,
           density: [
+            "Не выбрано",
             80,
           ],
           quantity: [
@@ -748,6 +960,7 @@ const config = {
           width: 210,
           height: 148,
           density: [
+            "Не выбрано",
             80,
           ],
           quantity: [
@@ -764,6 +977,7 @@ const config = {
           width: 297,
           height: 210,
           density: [
+            "Не выбрано",
             80,
           ],
           quantity: [
@@ -777,6 +991,10 @@ const config = {
         },
       ],
       front: [
+        {
+          name: "Не выбрано",
+          value: 0
+        },
         {
           name: "Черно-белая",
           value: 1
@@ -797,11 +1015,23 @@ const config = {
       name: 'adhesive',
       title: 'Самоклейка',
       formats: [
+        {
+          name: 'Не выбрано',
+          width: 0,
+          height: 0,
+          density: [
+            'Нет',
+          ],
+          quantity: [
+            0
+          ],
+        },
         { // A7
           name: 'A7',
           width: 105,
           height: 74,
           density: [
+            "Не выбрано",
             80,
           ],
           quantity: [
@@ -818,6 +1048,7 @@ const config = {
           width: 148,
           height: 105,
           density: [
+            "Не выбрано",
             80,
           ],
           quantity: [
@@ -834,6 +1065,7 @@ const config = {
           width: 210,
           height: 148,
           density: [
+            "Не выбрано",
             80,
           ],
           quantity: [
@@ -850,6 +1082,7 @@ const config = {
           width: 297,
           height: 210,
           density: [
+            "Не выбрано",
             80,
           ],
           quantity: [
@@ -866,6 +1099,7 @@ const config = {
           width: 420,
           height: 297,
           density: [
+            "Не выбрано",
             80
           ],
           quantity: [
@@ -892,6 +1126,7 @@ const config = {
           width: 420,
           height: 297,
           density: [
+            "Не выбрано",
             80,
           ],
           quantity: [
@@ -936,6 +1171,10 @@ const config = {
     200
   ],
   front: [
+    {
+      name: "Не выбрано",
+      value: 0
+    },
     {
       name: "Черно-белая",
       value: 1
@@ -999,7 +1238,7 @@ const foto_config = {
     },
   ],
   density: [
-    230,
+    260,
   ],
   quantity: [
     1,
@@ -2907,6 +3146,16 @@ const prices = {
   ],
   "mel": [
       {
+          "1": "80",
+          "2": "87",
+          "4": "139",
+          "5": "227",
+          "8": "227",
+          "format": "A7",
+          "density": "130",
+          "quantity": "8"
+      },
+      {
           "1": "84",
           "2": "91",
           "4": "145",
@@ -2955,6 +3204,16 @@ const prices = {
           "format": "A7",
           "density": "130",
           "quantity": "200"
+      },
+      {
+          "1": "87",
+          "2": "92",
+          "4": "144",
+          "5": "234",
+          "8": "234",
+          "format": "A7",
+          "density": "200",
+          "quantity": "8"
       },
       {
           "1": "91",
@@ -3007,6 +3266,76 @@ const prices = {
           "quantity": "200"
       },
       {
+          "1": "139",
+          "2": "205",
+          "4": "158",
+          "5": "245",
+          "8": "245",
+          "format": "A7",
+          "density": "300",
+          "quantity": "8"
+      },
+      {
+          "1": "145",
+          "2": "214",
+          "4": "158",
+          "5": "255",
+          "8": "255",
+          "format": "A7",
+          "density": "300",
+          "quantity": "10"
+      },
+      {
+          "1": "161",
+          "2": "238",
+          "4": "186",
+          "5": "300",
+          "8": "300",
+          "format": "A7",
+          "density": "300",
+          "quantity": "20"
+      },
+      {
+          "1": "214",
+          "2": "294",
+          "4": "256",
+          "5": "402",
+          "8": "402",
+          "format": "A7",
+          "density": "300",
+          "quantity": "50"
+      },
+      {
+          "1": "285",
+          "2": "386",
+          "4": "359",
+          "5": "539",
+          "8": "539",
+          "format": "A7",
+          "density": "300",
+          "quantity": "100"
+      },
+      {
+          "1": "410",
+          "2": "554",
+          "4": "544",
+          "5": "752",
+          "8": "752",
+          "format": "A7",
+          "density": "300",
+          "quantity": "200"
+      },
+      {
+          "1": "53",
+          "2": "56",
+          "4": "96",
+          "5": "152",
+          "8": "152",
+          "format": "A6",
+          "density": "130",
+          "quantity": "4"
+      },
+      {
           "1": "101",
           "2": "108",
           "4": "185",
@@ -3055,6 +3384,16 @@ const prices = {
           "format": "A6",
           "density": "130",
           "quantity": "200"
+      },
+      {
+          "1": "56",
+          "2": "59",
+          "4": "99",
+          "5": "157",
+          "8": "157",
+          "format": "A6",
+          "density": "200",
+          "quantity": "4"
       },
       {
           "1": "108",
@@ -3107,6 +3446,76 @@ const prices = {
           "quantity": "200"
       },
       {
+          "1": "91",
+          "2": "131",
+          "4": "104",
+          "5": "163",
+          "8": "163",
+          "format": "A6",
+          "density": "300",
+          "quantity": "4"
+      },
+      {
+          "1": "175",
+          "2": "252",
+          "4": "200",
+          "5": "314",
+          "8": "314",
+          "format": "A6",
+          "density": "300",
+          "quantity": "10"
+      },
+      {
+          "1": "202",
+          "2": "282",
+          "4": "236",
+          "5": "367",
+          "8": "367",
+          "format": "A6",
+          "density": "300",
+          "quantity": "20"
+      },
+      {
+          "1": "298",
+          "2": "399",
+          "4": "372",
+          "5": "552",
+          "8": "552",
+          "format": "A6",
+          "density": "300",
+          "quantity": "50"
+      },
+      {
+          "1": "424",
+          "2": "567",
+          "4": "557",
+          "5": "765",
+          "8": "765",
+          "format": "A6",
+          "density": "300",
+          "quantity": "100"
+      },
+      {
+          "1": "672",
+          "2": "894",
+          "4": "846",
+          "5": "1274",
+          "8": "1274",
+          "format": "A6",
+          "density": "300",
+          "quantity": "200"
+      },
+      {
+          "1": "21",
+          "2": "24",
+          "4": "48",
+          "5": "80",
+          "8": "80",
+          "format": "A5",
+          "density": "130",
+          "quantity": "2"
+      },
+      {
           "1": "82",
           "2": "92",
           "4": "185",
@@ -3157,6 +3566,16 @@ const prices = {
           "quantity": "200"
       },
       {
+          "1": "24",
+          "2": "26",
+          "4": "51",
+          "5": "83",
+          "8": "83",
+          "format": "A5",
+          "density": "200",
+          "quantity": "2"
+      },
+      {
           "1": "91",
           "2": "101",
           "4": "195",
@@ -3204,6 +3623,66 @@ const prices = {
           "8": "2100",
           "format": "A5",
           "density": "200",
+          "quantity": "200"
+      },
+      {
+          "1": "45",
+          "2": "66",
+          "4": "54",
+          "5": "88",
+          "8": "88",
+          "format": "A5",
+          "density": "300",
+          "quantity": "2"
+      },
+      {
+          "1": "174",
+          "2": "255",
+          "4": "209",
+          "5": "340",
+          "8": "340",
+          "format": "A5",
+          "density": "300",
+          "quantity": "10"
+      },
+      {
+          "1": "225",
+          "2": "311",
+          "4": "277",
+          "5": "437",
+          "8": "437",
+          "format": "A5",
+          "density": "300",
+          "quantity": "20"
+      },
+      {
+          "1": "396",
+          "2": "539",
+          "4": "529",
+          "5": "737",
+          "8": "737",
+          "format": "A5",
+          "density": "300",
+          "quantity": "50"
+      },
+      {
+          "1": "643",
+          "2": "865",
+          "4": "817",
+          "5": "1245",
+          "8": "1245",
+          "format": "A5",
+          "density": "300",
+          "quantity": "100"
+      },
+      {
+          "1": "1142",
+          "2": "1570",
+          "4": "1508",
+          "5": "2326",
+          "8": "2326",
+          "format": "A5",
+          "density": "300",
           "quantity": "200"
       },
       {
@@ -3269,9 +3748,9 @@ const prices = {
       {
           "1": "17",
           "2": "21",
-          "4": "42",
-          "5": "71",
-          "8": "71",
+          "4": "35",
+          "5": "68",
+          "8": "68",
           "format": "A4",
           "density": "200",
           "quantity": "1"
@@ -3324,6 +3803,66 @@ const prices = {
           "8": "3984",
           "format": "A4",
           "density": "200",
+          "quantity": "200"
+      },
+      {
+          "1": "27",
+          "2": "39",
+          "4": "40",
+          "5": "72",
+          "8": "72",
+          "format": "A4",
+          "density": "300",
+          "quantity": "1"
+      },
+      {
+          "1": "210",
+          "2": "297",
+          "4": "262",
+          "5": "422",
+          "8": "422",
+          "format": "A4",
+          "density": "300",
+          "quantity": "10"
+      },
+      {
+          "1": "315",
+          "2": "440",
+          "4": "423",
+          "5": "616",
+          "8": "616",
+          "format": "A4",
+          "density": "300",
+          "quantity": "20"
+      },
+      {
+          "1": "627",
+          "2": "848",
+          "4": "801",
+          "5": "1229",
+          "8": "1229",
+          "format": "A4",
+          "density": "300",
+          "quantity": "50"
+      },
+      {
+          "1": "1124",
+          "2": "1551",
+          "4": "1490",
+          "5": "2309",
+          "8": "2309",
+          "format": "A4",
+          "density": "300",
+          "quantity": "100"
+      },
+      {
+          "1": "2146",
+          "2": "2886",
+          "4": "2888",
+          "5": "4426",
+          "8": "4426",
+          "format": "A4",
+          "density": "300",
           "quantity": "200"
       },
       {
@@ -3447,6 +3986,186 @@ const prices = {
           "quantity": "200"
       },
       {
+          "1": "55",
+          "2": "70",
+          "4": "72",
+          "5": "134",
+          "8": "134",
+          "format": "A3",
+          "density": "300",
+          "quantity": "1"
+      },
+      {
+          "1": "325",
+          "2": "453",
+          "4": "418",
+          "5": "614",
+          "8": "614",
+          "format": "A3",
+          "density": "300",
+          "quantity": "10"
+      },
+      {
+          "1": "560",
+          "2": "754",
+          "4": "730",
+          "5": "1055",
+          "8": "1055",
+          "format": "A3",
+          "density": "300",
+          "quantity": "20"
+      },
+      {
+          "1": "1234",
+          "2": "1666",
+          "4": "1632",
+          "5": "2455",
+          "8": "2455",
+          "format": "A3",
+          "density": "300",
+          "quantity": "50"
+      },
+      {
+          "1": "2382",
+          "2": "3127",
+          "4": "3216",
+          "5": "4757",
+          "8": "4757",
+          "format": "A3",
+          "density": "300",
+          "quantity": "100"
+      },
+      {
+          "1": "4606",
+          "2": "5416",
+          "4": "6340",
+          "5": "9162",
+          "8": "9162",
+          "format": "A3",
+          "density": "300",
+          "quantity": "200"
+      },
+      {
+          "1": "25",
+          "2": "31",
+          "4": "52",
+          "5": "94",
+          "8": "94",
+          "format": "SRA3",
+          "density": "130",
+          "quantity": "1"
+      },
+      {
+          "1": "113",
+          "2": "145",
+          "4": "321",
+          "5": "508",
+          "8": "508",
+          "format": "SRA3",
+          "density": "130",
+          "quantity": "10"
+      },
+      {
+          "1": "197",
+          "2": "256",
+          "4": "537",
+          "5": "852",
+          "8": "852",
+          "format": "SRA3",
+          "density": "130",
+          "quantity": "20"
+      },
+      {
+          "1": "440",
+          "2": "581",
+          "4": "1148",
+          "5": "1961",
+          "8": "1961",
+          "format": "SRA3",
+          "density": "130",
+          "quantity": "50"
+      },
+      {
+          "1": "842",
+          "2": "1096",
+          "4": "2247",
+          "5": "3779",
+          "8": "3779",
+          "format": "SRA3",
+          "density": "130",
+          "quantity": "100"
+      },
+      {
+          "1": "1618",
+          "2": "2108",
+          "4": "4404",
+          "5": "7216",
+          "8": "7216",
+          "format": "SRA3",
+          "density": "130",
+          "quantity": "200"
+      },
+      {
+          "1": "55",
+          "2": "70",
+          "4": "72",
+          "5": "134",
+          "8": "134",
+          "format": "SRA3",
+          "density": "300",
+          "quantity": "1"
+      },
+      {
+          "1": "325",
+          "2": "453",
+          "4": "418",
+          "5": "614",
+          "8": "614",
+          "format": "SRA3",
+          "density": "300",
+          "quantity": "10"
+      },
+      {
+          "1": "560",
+          "2": "754",
+          "4": "730",
+          "5": "1055",
+          "8": "1055",
+          "format": "SRA3",
+          "density": "300",
+          "quantity": "20"
+      },
+      {
+          "1": "1234",
+          "2": "1666",
+          "4": "1632",
+          "5": "2455",
+          "8": "2455",
+          "format": "SRA3",
+          "density": "300",
+          "quantity": "50"
+      },
+      {
+          "1": "2382",
+          "2": "3127",
+          "4": "3216",
+          "5": "4757",
+          "8": "4757",
+          "format": "SRA3",
+          "density": "300",
+          "quantity": "100"
+      },
+      {
+          "1": "4606",
+          "2": "5416",
+          "4": "6340",
+          "5": "9162",
+          "8": "9162",
+          "format": "SRA3",
+          "density": "300",
+          "quantity": "200"
+      },
+      {
           "1": "87",
           "2": "94",
           "4": "171",
@@ -3545,6 +4264,156 @@ const prices = {
           "format": "ЕвроФлаер",
           "density": "200",
           "quantity": "200"
+      },
+      {
+          "1": "161",
+          "2": "238",
+          "4": "186",
+          "5": "300",
+          "8": "300",
+          "format": "ЕвроФлаер",
+          "density": "300",
+          "quantity": "10"
+      },
+      {
+          "1": "213",
+          "2": "294",
+          "4": "255",
+          "5": "402",
+          "8": "402",
+          "format": "ЕвроФлаер",
+          "density": "300",
+          "quantity": "20"
+      },
+      {
+          "1": "325",
+          "2": "440",
+          "4": "422",
+          "5": "614",
+          "8": "614",
+          "format": "ЕвроФлаер",
+          "density": "300",
+          "quantity": "50"
+      },
+      {
+          "1": "494",
+          "2": "664",
+          "4": "653",
+          "5": "923",
+          "8": "923",
+          "format": "ЕвроФлаер",
+          "density": "300",
+          "quantity": "100"
+      },
+      {
+          "1": "840",
+          "2": "1136",
+          "4": "1084",
+          "5": "1650",
+          "8": "1650",
+          "format": "ЕвроФлаер",
+          "density": "300",
+          "quantity": "200"
+      },
+      {
+          "1": "323",
+          "2": "410",
+          "4": "365",
+          "5": "518",
+          "8": "518",
+          "format": "Визитка",
+          "density": "300",
+          "quantity": "100"
+      },
+      {
+          "1": "414",
+          "2": "520",
+          "4": "486",
+          "5": "674",
+          "8": "674",
+          "format": "Визитка",
+          "density": "300",
+          "quantity": "200"
+      },
+      {
+          "1": "492",
+          "2": "624",
+          "4": "600",
+          "5": "798",
+          "8": "798",
+          "format": "Визитка",
+          "density": "300",
+          "quantity": "300"
+      },
+      {
+          "1": "604",
+          "2": "760",
+          "4": "744",
+          "5": "972",
+          "8": "972",
+          "format": "Визитка",
+          "density": "300",
+          "quantity": "400"
+      },
+      {
+          "1": "685",
+          "2": "860",
+          "4": "845",
+          "5": "1120",
+          "8": "1120",
+          "format": "Визитка",
+          "density": "300",
+          "quantity": "500"
+      },
+      {
+          "1": "309",
+          "2": "396",
+          "4": "351",
+          "5": "504",
+          "8": "504",
+          "format": "ЕвроВизитка",
+          "density": "300",
+          "quantity": "100"
+      },
+      {
+          "1": "426",
+          "2": "540",
+          "4": "512",
+          "5": "704",
+          "8": "704",
+          "format": "ЕвроВизитка",
+          "density": "300",
+          "quantity": "200"
+      },
+      {
+          "1": "534",
+          "2": "678",
+          "4": "660",
+          "5": "858",
+          "8": "858",
+          "format": "ЕвроВизитка",
+          "density": "300",
+          "quantity": "300"
+      },
+      {
+          "1": "644",
+          "2": "812",
+          "4": "796",
+          "5": "1056",
+          "8": "1056",
+          "format": "ЕвроВизитка",
+          "density": "300",
+          "quantity": "400"
+      },
+      {
+          "1": "750",
+          "2": "950",
+          "4": "925",
+          "5": "1250",
+          "8": "1250",
+          "format": "ЕвроВизитка",
+          "density": "300",
+          "quantity": "500"
       }
   ],
   "lam": [
@@ -4105,75 +4974,75 @@ const prices = {
   "foto": [
       {
           "format": "10x15",
-          "density": "230",
+          "density": "260",
           "quantity": "1",
+          "glossy": "10",
+          "semi-gloss": "13",
+          "matte": "13"
+      },
+      {
+          "format": "10x15",
+          "density": "260",
+          "quantity": "101",
           "glossy": "9",
           "semi-gloss": "12",
           "matte": "12"
       },
       {
           "format": "10x15",
-          "density": "230",
-          "quantity": "101",
+          "density": "260",
+          "quantity": "501",
           "glossy": "8",
           "semi-gloss": "11",
           "matte": "11"
       },
       {
-          "format": "10x15",
-          "density": "230",
-          "quantity": "501",
-          "glossy": "7",
-          "semi-gloss": "7",
-          "matte": "10"
-      },
-      {
           "format": "A5",
-          "density": "230",
+          "density": "260",
           "quantity": "1",
-          "glossy": "25",
-          "semi-gloss": "25",
-          "matte": "25"
+          "glossy": "26",
+          "semi-gloss": "26",
+          "matte": "26"
       },
       {
           "format": "A5",
-          "density": "230",
-          "quantity": "51",
-          "glossy": "23",
-          "semi-gloss": "23",
-          "matte": "23"
+          "density": "260",
+          "quantity": "101",
+          "glossy": "24",
+          "semi-gloss": "24",
+          "matte": "24"
       },
       {
           "format": "A4",
-          "density": "230",
+          "density": "260",
           "quantity": "1",
+          "glossy": "55",
+          "semi-gloss": "55",
+          "matte": "55"
+      },
+      {
+          "format": "A4",
+          "density": "260",
+          "quantity": "101",
           "glossy": "50",
           "semi-gloss": "50",
           "matte": "50"
       },
       {
-          "format": "A4",
-          "density": "230",
-          "quantity": "51",
-          "glossy": "45",
-          "semi-gloss": "45",
-          "matte": "45"
+          "format": "A3",
+          "density": "260",
+          "quantity": "1",
+          "glossy": "110",
+          "semi-gloss": "110",
+          "matte": "110"
       },
       {
           "format": "A3",
-          "density": "230",
-          "quantity": "1",
+          "density": "260",
+          "quantity": "101",
           "glossy": "100",
           "semi-gloss": "100",
           "matte": "100"
-      },
-      {
-          "format": "A3",
-          "density": "230",
-          "quantity": "51",
-          "glossy": "90",
-          "semi-gloss": "90",
-          "matte": "90"
       }
   ]
 }

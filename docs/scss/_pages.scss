@@ -12,7 +12,7 @@
   }
 
   &-item {
-    width: calc(100% / 6 - 41px);
+    width: calc(100% / 6);
     min-height: 385px;
     border: 1px solid $border;
     border-style: none solid solid none;
@@ -20,19 +20,19 @@
     transition: background-color .3s;
 
     @media (max-width: 2140px) {
-      width: calc(100% / 5 - 41px);
+      width: calc(100% / 5);
     }
 
     @media (max-width: 1920px) {
-      width: calc(100% / 4 - 41px);
+      width: calc(100% / 4);
     }
 
     @media (max-width: 1600px) {
-      width: calc(100% / 3 - 41px);
+      width: calc(100% / 3);
     }
 
     @media (max-width: 1140px) {
-      width: calc(100% / 2 - 41px);
+      width: calc(100% / 2);
     }
 
     @media (max-width: 900px) {
@@ -77,26 +77,26 @@
 
     &-category {
       min-height: 315px;
-      width: calc(100% / 7 - 41px);
+      width: calc(100% / 7);
 
       @media (max-width: 2140px) {
-        width: calc(100% / 6 - 41px);
+        width: calc(100% / 6);
       }
   
       @media (max-width: 1920px) {
-        width: calc(100% / 5 - 41px);
+        width: calc(100% / 5);
       }
   
       @media (max-width: 1600px) {
-        width: calc(100% / 4 - 41px);
+        width: calc(100% / 4);
       }
   
       @media (max-width: 1140px) {
-        width: calc(100% / 3 - 41px);
+        width: calc(100% / 3);
       }
 
       @media (max-width: 900px) {
-        width: calc(100% / 2 - 41px);
+        width: calc(100% / 2);
       }
 
       @media (max-width: 780px) {
