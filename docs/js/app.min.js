@@ -189,6 +189,7 @@ function init() {
 
         totalField.innerHTML = 0;
         totalOne.innerHTML = 0;
+        document.querySelector('.calc-preview').innerHTML = '';
         quantityInput.removeEventListener('input', quantityError);
         quantityInput.addEventListener('input', quantityError);
       }
@@ -288,7 +289,8 @@ function init() {
         if(density === "Не выбрано" || color === 0) return
 
         let total = 0;
-        let lamValue, lamOne;
+        let lamValue = 0;
+        let lamOne = 0;
         const totalList = prices[type].filter(i => i.format === format && i.density === density).find(x => x.quantity === quantity);
         const laminationList = lamination !== '0' ? prices.lam.filter(i => i.format === format) : [];
 
@@ -314,14 +316,13 @@ function init() {
             const lamValueMin = laminationList.find(i => +i.quantity === quantityMin)[lamination];
             const lamValueMax = laminationList.find(i => +i.quantity === quantityMax)[lamination];
             lamOne = ((lamValueMax - lamValueMin) / (totalListMax.quantity - totalListMin.quantity)).toFixed(2);
+            lamValue = +lamValueMin + +lamOne * (+quantity - totalListMin.quantity);
           }
       
           const one = ((totalMax - totalMin) / (totalListMax.quantity - totalListMin.quantity)).toFixed(2);
-          
-          lamValue = lamOne ? lamOne * quantity : 0;
           total = +totalMin + +one * (+quantity - totalListMin.quantity);
         }
-      
+
         totalField.innerHTML = (+total + +lamValue).toFixed(2);
         totalOne.innerHTML = ((+total + +lamValue) / quantity).toFixed(2);
         
